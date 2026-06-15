@@ -185,37 +185,6 @@
   }
   .btn-skip:active { background: rgba(255,255,255,.1); }
 
-  /* ── TELA 4 — PERGUNTA ── */
-  #s-question { gap: 20px; }
-
-  .q-card {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 22px; padding: 30px 26px;
-    width: 100%; max-width: 480px;
-    text-align: center; backdrop-filter: blur(16px);
-  }
-  .q-card .q-icon { font-size: 42px; margin-bottom: 10px; }
-  .q-card h2 { color: #fff; font-size: 19px; font-weight: 700; margin-bottom: 6px; }
-  .q-card p  { color: rgba(255,255,255,.5); font-size: 14px; margin-bottom: 22px; }
-
-  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .opt {
-    background: rgba(255,255,255,.07);
-    border: 1.5px solid rgba(255,255,255,.12);
-    border-radius: 12px; padding: 14px 10px;
-    color: #fff; font-size: 13px; font-weight: 600;
-    cursor: pointer; transition: all .18s; text-align: center; line-height: 1.3;
-  }
-  .opt .oi { font-size: 24px; display: block; margin-bottom: 5px; }
-  .opt:active { background: rgba(30,86,200,.35); border-color: var(--azul-c); transform: scale(.96); }
-
-  .btn-skip-q {
-    background: none; border: none;
-    color: rgba(255,255,255,.28); font-size: 14px;
-    cursor: pointer; text-decoration: underline;
-  }
-
   /* ── TELA 5 — PRÊMIO ── */
   #s-result { gap: 18px; }
 
@@ -404,34 +373,6 @@
   <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
 </div>
 
-<!-- ══ TELA 4: PERGUNTA ══ -->
-<div class="screen" id="s-question">
-  <div class="logo">
-    <div class="logo-icon">⚡</div>
-    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
-  </div>
-  <div class="q-card">
-    <div class="q-icon">🤔</div>
-    <h2>Pergunta rápida...</h2>
-    <p>Qual situação mais acontece na sua gestão hoje?</p>
-    <div class="opts">
-      <button class="opt" data-pain="Controle de Ponto e Jornada">
-        <span class="oi">⏱️</span>Controle de frequência dos servidores
-      </button>
-      <button class="opt" data-pain="Atendimento em Saúde">
-        <span class="oi">🏥</span>Gestão de atendimento em saúde
-      </button>
-      <button class="opt" data-pain="Sessões da Câmara">
-        <span class="oi">🏛️</span>Organização das sessões da câmara
-      </button>
-      <button class="opt" data-pain="Filas e Atendimento ao Público">
-        <span class="oi">📋</span>Filas e agendamento de serviços
-      </button>
-    </div>
-  </div>
-  <button class="btn-skip-q" id="btn-skip-q">Pular essa etapa</button>
-</div>
-
 <!-- ══ TELA 5: PRÊMIO ══ -->
 <div class="screen" id="s-result">
   <div class="logo">
@@ -444,7 +385,6 @@
       <div class="p-congrats">Parabéns! Você ganhou</div>
       <div id="p-name"></div>
       <div id="p-desc"></div>
-      <div id="p-pain"></div>
     </div>
   </div>
   <button class="btn-restart" id="btn-restart">Nova rodada</button>
@@ -625,9 +565,6 @@ function showPrize() {
   document.getElementById('p-name').textContent = seg.prize;
   document.getElementById('p-desc').textContent = seg.desc;
   document.getElementById('prize-card').style.borderColor = seg.color + '99';
-  const pt = document.getElementById('p-pain');
-  if (lead && lead.pain) { pt.textContent = '🎯 Foco: ' + lead.pain; pt.style.display = 'inline-block'; }
-  else pt.style.display = 'none';
   confetti(); win(); go('s-result');
   if (lead && (lead.nome || lead.whatsapp)) saveLead();
 }
@@ -649,22 +586,12 @@ document.getElementById('btn-reveal').addEventListener('click', () => {
   if (!nome || !wpp) return;
   click();
   lead = { nome, whatsapp: wpp, pain: null };
-  go('s-question');
+  showPrize();
 });
 
 document.getElementById('btn-skip').addEventListener('click', () => {
   click(); lead = null; showPrize();
 });
-
-document.querySelectorAll('.opt').forEach(btn => {
-  btn.addEventListener('click', () => {
-    click();
-    if (lead) lead.pain = btn.dataset.pain;
-    showPrize();
-  });
-});
-
-document.getElementById('btn-skip-q').addEventListener('click', () => { click(); showPrize(); });
 
 document.getElementById('btn-restart').addEventListener('click', () => {
   click(); seg = null; lead = null;

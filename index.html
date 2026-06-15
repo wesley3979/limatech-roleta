@@ -10,9 +10,7 @@
     --amarelo: #f59e0b; --laranja: #f97316; --ciano: #06b6d4; --vermelho: #ef4444;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-  html {
-    zoom: 1.3;
-  }
+  html { zoom: 1.3; }
   html, body {
     width: 100%; height: 100%;
     background: linear-gradient(135deg, #060c1f 0%, #0a1a3e 50%, #060c1f 100%);
@@ -27,192 +25,214 @@
     align-items: center; justify-content: center;
     opacity: 0; pointer-events: none;
     transition: opacity .35s ease;
-    z-index: 1; padding: 20px;
+    z-index: 1; padding: 16px 20px;
   }
   .screen.active { opacity: 1; pointer-events: all; }
 
   /* ── LOGO ── */
-  .logo { display: flex; align-items: center; gap: 12px; cursor: pointer; margin-bottom: 4px; flex-shrink: 0; }
-  .logo-icon { width: 52px; height: 52px; background: linear-gradient(135deg, var(--azul-c), var(--ciano)); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 26px; box-shadow: 0 0 22px rgba(30,86,200,.5); }
-  .logo-txt strong { color: #fff; font-size: 24px; display: block; }
-  .logo-txt small { color: rgba(255,255,255,.4); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
+  .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; flex-shrink: 0; }
+  .logo-icon { width: 46px; height: 46px; background: linear-gradient(135deg, var(--azul-c), var(--ciano)); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 0 22px rgba(30,86,200,.5); }
+  .logo-txt strong { color: #fff; font-size: 20px; display: block; }
+  .logo-txt small { color: rgba(255,255,255,.4); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; }
 
-  /* ════ INÍCIO ════ */
-  #s-start { gap: 14px; padding-bottom: 0; }
-  .mode-panel { display: none; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
+  /* ══════════════════════════════════════════
+     TELA 1 — INÍCIO (landscape: linha)
+  ══════════════════════════════════════════ */
+  #s-start {
+    flex-direction: row;
+    gap: 32px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Coluna esquerda: logo + conteúdo do modo + botão + nav */
+  .start-left {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px;
+    flex: 1; max-width: 460px;
+  }
+
+  /* Coluna direita: roleta (visível só no modo wheel) */
+  .start-right {
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* Painéis de modo (headline, slot-preview, quiz-preview) */
+  .mode-panel { display: none; flex-direction: column; align-items: center; gap: 12px; width: 100%; }
   .mode-panel.active { display: flex; }
 
-  /* Roleta */
+  /* Roleta: headline */
   .headline { text-align: center; }
-  .headline h1 { color: #fff; font-size: 42px; font-weight: 900; line-height: 1.1; text-shadow: 0 0 40px rgba(30,86,200,.8); }
+  .headline h1 { color: #fff; font-size: 38px; font-weight: 900; line-height: 1.1; text-shadow: 0 0 40px rgba(30,86,200,.8); }
   .headline h1 em { color: var(--amarelo); font-style: normal; }
-  .headline p { color: rgba(255,255,255,.5); font-size: 18px; margin-top: 8px; }
-  .wheel-wrap { position: relative; width: min(380px,80vw); height: min(380px,80vw); filter: drop-shadow(0 0 32px rgba(30,86,200,.6)); flex-shrink: 0; }
+  .headline p { color: rgba(255,255,255,.5); font-size: 16px; margin-top: 6px; }
+
+  /* Roleta: wheel */
+  .wheel-wrap { position: relative; width: min(310px, 42vh); height: min(310px, 42vh); filter: drop-shadow(0 0 32px rgba(30,86,200,.6)); flex-shrink: 0; }
   .wheel-wrap canvas { border-radius: 50%; display: block; width: 100%; height: 100%; }
-  .wheel-pointer { position: absolute; top: -18px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 18px solid transparent; border-right: 18px solid transparent; border-top: 36px solid var(--amarelo); filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); z-index: 2; }
-  .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 66px; height: 66px; background: radial-gradient(circle, #fff 20%, #e2e8f0 100%); border-radius: 50%; box-shadow: 0 0 0 6px var(--azul), 0 0 20px rgba(0,0,0,.5); z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 30px; }
+  .wheel-pointer { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); width: 0; height: 0; border-left: 15px solid transparent; border-right: 15px solid transparent; border-top: 30px solid var(--amarelo); filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); z-index: 2; }
+  .wheel-center { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%); width: 58px; height: 58px; background: radial-gradient(circle, #fff 20%, #e2e8f0 100%); border-radius: 50%; box-shadow: 0 0 0 5px var(--azul), 0 0 20px rgba(0,0,0,.5); z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 27px; }
 
   /* Slot preview */
-  .slot-preview { background: linear-gradient(160deg, #12122a, #0d1520); border: 3px solid rgba(245,158,11,.5); border-radius: 26px; padding: 28px 32px 30px; text-align: center; max-width: 480px; width: 100%; box-shadow: 0 0 60px rgba(245,158,11,.2); }
-  .slot-preview-title { font-size: 14px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--amarelo); margin-bottom: 20px; }
-  .slot-preview-reels { display: flex; gap: 12px; justify-content: center; margin-bottom: 20px; }
-  .slot-prev-reel { width: 90px; height: 90px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.2); border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 46px; }
-  .slot-preview-desc { color: rgba(255,255,255,.5); font-size: 16px; line-height: 1.5; margin-bottom: 6px; }
-  .slot-tries-badge { display: inline-block; margin-top: 10px; background: rgba(245,158,11,.15); border: 1.5px solid rgba(245,158,11,.4); border-radius: 30px; padding: 8px 22px; color: var(--amarelo); font-size: 15px; font-weight: 700; }
+  .slot-preview { background: linear-gradient(160deg, #12122a, #0d1520); border: 3px solid rgba(245,158,11,.5); border-radius: 22px; padding: 20px 24px 22px; text-align: center; width: 100%; box-shadow: 0 0 60px rgba(245,158,11,.2); }
+  .slot-preview-title { font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--amarelo); margin-bottom: 14px; }
+  .slot-preview-reels { display: flex; gap: 10px; justify-content: center; margin-bottom: 14px; }
+  .slot-prev-reel { width: 78px; height: 78px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.2); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 38px; }
+  .slot-preview-desc { color: rgba(255,255,255,.5); font-size: 14px; line-height: 1.5; margin-bottom: 4px; }
+  .slot-tries-badge { display: inline-block; margin-top: 8px; background: rgba(245,158,11,.15); border: 1.5px solid rgba(245,158,11,.4); border-radius: 30px; padding: 6px 18px; color: var(--amarelo); font-size: 14px; font-weight: 700; }
 
   /* Quiz preview */
-  .quiz-preview { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 26px; text-align: center; max-width: 480px; width: 100%; overflow: hidden; }
-  .quiz-preview-header { background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 50%, #1a472a 100%); padding: 28px 24px 22px; position: relative; overflow: hidden; }
-  .quiz-preview-header::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 14px; background: repeating-linear-gradient(90deg,#fff 0,#fff 6px,transparent 6px,transparent 26px); opacity: .18; }
-  .quiz-preview-trophies { font-size: 52px; line-height: 1; margin-bottom: 10px; position: relative; z-index: 1; }
-  .quiz-preview-title { color: #fff; font-size: 24px; font-weight: 900; margin-bottom: 4px; text-shadow: 0 2px 8px rgba(0,0,0,.4); position: relative; z-index: 1; }
-  .quiz-preview-sub-header { color: rgba(255,255,255,.6); font-size: 14px; position: relative; z-index: 1; }
-  .quiz-preview-body { padding: 20px 24px 24px; }
-  .quiz-preview-sub { color: rgba(255,255,255,.5); font-size: 16px; line-height: 1.5; margin-bottom: 14px; }
-  .quiz-preview-badge { display: inline-block; background: rgba(34,197,94,.15); border: 1.5px solid rgba(34,197,94,.35); border-radius: 30px; padding: 8px 22px; color: var(--verde); font-size: 15px; font-weight: 700; }
+  .quiz-preview { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12); border-radius: 22px; text-align: center; width: 100%; overflow: hidden; }
+  .quiz-preview-header { background: linear-gradient(135deg, #1a472a 0%, #2d6a4f 50%, #1a472a 100%); padding: 20px 24px 18px; position: relative; overflow: hidden; }
+  .quiz-preview-header::before { content: ''; position: absolute; bottom: 0; left: 0; right: 0; height: 12px; background: repeating-linear-gradient(90deg,#fff 0,#fff 6px,transparent 6px,transparent 26px); opacity: .18; }
+  .quiz-preview-trophies { font-size: 44px; line-height: 1; margin-bottom: 8px; position: relative; z-index: 1; }
+  .quiz-preview-title { color: #fff; font-size: 20px; font-weight: 900; margin-bottom: 3px; text-shadow: 0 2px 8px rgba(0,0,0,.4); position: relative; z-index: 1; }
+  .quiz-preview-sub-header { color: rgba(255,255,255,.6); font-size: 13px; position: relative; z-index: 1; }
+  .quiz-preview-body { padding: 14px 20px 18px; }
+  .quiz-preview-sub { color: rgba(255,255,255,.5); font-size: 14px; line-height: 1.5; margin-bottom: 12px; }
+  .quiz-preview-badge { display: inline-block; background: rgba(34,197,94,.15); border: 1.5px solid rgba(34,197,94,.35); border-radius: 30px; padding: 6px 18px; color: var(--verde); font-size: 14px; font-weight: 700; }
 
-  /* Navegador de modo (compacto, no fluxo) */
-  .mode-nav { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 480px; }
-  .btn-admin-small { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: 12px; font-weight: 600; cursor: pointer; padding: 10px 12px; border-radius: 12px; transition: all .2s; flex-shrink: 0; white-space: nowrap; }
+  /* Navegador de modo */
+  .mode-nav { display: flex; align-items: center; gap: 10px; width: 100%; }
+  .btn-admin-small { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: 12px; font-weight: 600; cursor: pointer; padding: 9px 11px; border-radius: 10px; transition: all .2s; flex-shrink: 0; white-space: nowrap; }
   .btn-admin-small:active { background: rgba(255,255,255,.1); }
-  .mode-cycler { flex: 1; display: flex; align-items: center; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12); border-radius: 50px; overflow: hidden; height: 48px; }
-  .btn-cycle { background: none; border: none; color: rgba(255,255,255,.55); font-size: 20px; font-weight: 900; cursor: pointer; padding: 0 16px; height: 100%; transition: background .15s, color .15s; flex-shrink: 0; }
+  .mode-cycler { flex: 1; display: flex; align-items: center; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12); border-radius: 50px; overflow: hidden; height: 44px; }
+  .btn-cycle { background: none; border: none; color: rgba(255,255,255,.55); font-size: 20px; font-weight: 900; cursor: pointer; padding: 0 14px; height: 100%; transition: background .15s, color .15s; flex-shrink: 0; }
   .btn-cycle:active { background: rgba(255,255,255,.1); color: #fff; }
-  .mode-cycler-label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
-  .mode-cycler-ico { font-size: 20px; line-height: 1; }
-  .mode-cycler-txt { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .3px; }
-  .mode-cycler-dots { display: flex; gap: 5px; align-items: center; margin-left: 6px; }
+  .mode-cycler-label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 7px; pointer-events: none; }
+  .mode-cycler-ico { font-size: 18px; line-height: 1; }
+  .mode-cycler-txt { color: #fff; font-size: 13px; font-weight: 700; letter-spacing: .3px; }
+  .mode-cycler-dots { display: flex; gap: 5px; align-items: center; margin-left: 5px; }
   .mode-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.2); transition: all .2s; }
   .mode-dot.active { background: var(--amarelo); transform: scale(1.4); }
 
   /* Botão girar */
-  .btn-spin { background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 60px; padding: 22px 70px; font-size: 26px; font-weight: 900; cursor: pointer; letter-spacing: .5px; box-shadow: 0 10px 32px rgba(245,158,11,.5); animation: pulse-btn 2s infinite; transition: transform .12s; flex-shrink: 0; }
+  .btn-spin { background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 60px; padding: 18px 60px; font-size: 22px; font-weight: 900; cursor: pointer; letter-spacing: .5px; box-shadow: 0 10px 32px rgba(245,158,11,.5); animation: pulse-btn 2s infinite; transition: transform .12s; flex-shrink: 0; width: 100%; }
   .btn-spin:active { transform: scale(.94); }
   @keyframes pulse-btn { 0%,100% { box-shadow: 0 10px 32px rgba(245,158,11,.4); } 50% { box-shadow: 0 10px 56px rgba(245,158,11,.9); } }
 
   /* ════ SPIN ROLETA ════ */
-  #s-spin { gap: 24px; }
-  .spin-label { color: rgba(255,255,255,.5); font-size: 20px; animation: blink 1s infinite; }
+  #s-spin { gap: 20px; }
+  .spin-label { color: rgba(255,255,255,.5); font-size: 18px; animation: blink 1s infinite; }
   @keyframes blink { 50% { opacity: .15; } }
 
   /* ════ CAÇA-NÍQUEL ════ */
-  #s-slot { gap: 0; justify-content: flex-start; padding: 18px 20px 20px; }
+  #s-slot { gap: 0; justify-content: flex-start; padding: 14px 20px 16px; }
 
-  /* Contador de tentativas grande */
-  .slot-tries-hero {
-    width: 100%; text-align: center; padding: 16px 0 14px; flex-shrink: 0;
-  }
-  .slot-tries-label {
-    color: rgba(255,255,255,.4); font-size: 16px; font-weight: 600;
-    text-transform: uppercase; letter-spacing: 2px; margin-bottom: 4px;
-  }
-  .slot-tries-count {
-    font-size: 80px; font-weight: 900; line-height: 1;
-    background: linear-gradient(135deg, var(--amarelo), var(--laranja));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
-    text-shadow: none;
-  }
-  .slot-tries-of { color: rgba(255,255,255,.25); font-size: 22px; font-weight: 600; margin-top: 2px; }
+  .slot-tries-hero { width: 100%; text-align: center; padding: 10px 0 10px; flex-shrink: 0; }
+  .slot-tries-label { color: rgba(255,255,255,.4); font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 2px; }
+  .slot-tries-count { font-size: 70px; font-weight: 900; line-height: 1; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+  .slot-tries-of { color: rgba(255,255,255,.25); font-size: 18px; font-weight: 600; margin-top: 2px; }
 
-  .slot-machine { background: linear-gradient(160deg, #12122a, #0d1520); border: 3px solid rgba(245,158,11,.5); border-radius: 28px; padding: 18px 24px 24px; box-shadow: 0 0 60px rgba(245,158,11,.22), inset 0 2px 0 rgba(255,255,255,.06); flex-shrink: 0; margin-bottom: 14px; }
-  .slot-title-bar { text-align: center; margin-bottom: 14px; font-size: 14px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--amarelo); }
-  .slot-reels { display: flex; gap: 12px; justify-content: center; position: relative; }
-  .reel-cv { border-radius: 14px; display: block; border: 2px solid rgba(255,255,255,.12); box-shadow: inset 0 0 20px rgba(0,0,0,.65); }
+  .slot-machine { background: linear-gradient(160deg, #12122a, #0d1520); border: 3px solid rgba(245,158,11,.5); border-radius: 24px; padding: 14px 20px 20px; box-shadow: 0 0 60px rgba(245,158,11,.22), inset 0 2px 0 rgba(255,255,255,.06); flex-shrink: 0; margin-bottom: 12px; }
+  .slot-title-bar { text-align: center; margin-bottom: 12px; font-size: 13px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--amarelo); }
+  .slot-reels { display: flex; gap: 10px; justify-content: center; position: relative; }
+  .reel-cv { border-radius: 12px; display: block; border: 2px solid rgba(255,255,255,.12); box-shadow: inset 0 0 20px rgba(0,0,0,.65); }
   .slot-win-line { position: absolute; top: 50%; left: -10px; right: -10px; transform: translateY(-50%); height: 112px; pointer-events: none; border: 2.5px solid rgba(245,158,11,.7); border-radius: 8px; box-shadow: 0 0 22px rgba(245,158,11,.4), inset 0 0 22px rgba(245,158,11,.1); }
   @keyframes slot-win-flash { 0%,100% { box-shadow: 0 0 22px rgba(245,158,11,.4); border-color: rgba(245,158,11,.7); } 50% { box-shadow: 0 0 70px rgba(245,158,11,1); border-color: var(--amarelo); } }
   .slot-win-line.flash { animation: slot-win-flash .4s ease 4; }
   @keyframes reel-stop-bounce { 0%,100% { transform: scaleY(1); } 35% { transform: scaleY(1.06); } 70% { transform: scaleY(.97); } }
   .reel-bounce { animation: reel-stop-bounce .35s ease; transform-origin: center; }
-  .slot-status { color: rgba(255,255,255,.55); font-size: 18px; font-weight: 600; text-align: center; min-height: 26px; }
-  .btn-slot-again { background: linear-gradient(135deg, var(--azul-c), var(--ciano)); color: #fff; border: none; border-radius: 16px; padding: 18px 44px; font-size: 20px; font-weight: 700; cursor: pointer; transition: transform .12s; box-shadow: 0 6px 22px rgba(30,86,200,.4); margin-top: 6px; }
+  .slot-status { color: rgba(255,255,255,.55); font-size: 17px; font-weight: 600; text-align: center; min-height: 24px; }
+  .btn-slot-again { background: linear-gradient(135deg, var(--azul-c), var(--ciano)); color: #fff; border: none; border-radius: 14px; padding: 16px 40px; font-size: 18px; font-weight: 700; cursor: pointer; transition: transform .12s; box-shadow: 0 6px 22px rgba(30,86,200,.4); margin-top: 6px; }
   .btn-slot-again:active { transform: scale(.96); }
 
   /* ════ QUIZ ════ */
   #s-quiz { gap: 0; padding: 0; justify-content: flex-start; }
-  .quiz-field-header { width: 100%; background: linear-gradient(180deg, #0f3d20 0%, #1a5c30 40%, #237a40 100%); padding: 18px 24px 26px; position: relative; overflow: hidden; flex-shrink: 0; text-align: center; }
+  .quiz-field-header { width: 100%; background: linear-gradient(180deg, #0f3d20 0%, #1a5c30 40%, #237a40 100%); padding: 14px 24px 20px; position: relative; overflow: hidden; flex-shrink: 0; text-align: center; }
   .quiz-field-header::before { content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(180deg, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, transparent 1px, transparent 28px); }
   .quiz-field-header::after { content: ''; position: absolute; bottom: -40px; left: 50%; transform: translateX(-50%); width: 110px; height: 110px; border: 2px solid rgba(255,255,255,.18); border-radius: 50%; }
   .quiz-header-content { position: relative; z-index: 1; }
-  .quiz-header-icons { font-size: 40px; margin-bottom: 4px; }
-  .quiz-header-title { color: #fff; font-size: 20px; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,.5); margin-bottom: 2px; }
-  .quiz-header-sub { color: rgba(255,255,255,.55); font-size: 13px; }
+  .quiz-header-icons { font-size: 34px; margin-bottom: 3px; }
+  .quiz-header-title { color: #fff; font-size: 18px; font-weight: 900; text-shadow: 0 2px 10px rgba(0,0,0,.5); margin-bottom: 2px; }
+  .quiz-header-sub { color: rgba(255,255,255,.55); font-size: 12px; }
 
-  /* Barra de progresso do quiz */
-  .quiz-progress-bar { width: 100%; background: rgba(255,255,255,.06); flex-shrink: 0; padding: 10px 20px; display: flex; align-items: center; gap: 12px; }
-  .quiz-score-label { color: rgba(255,255,255,.5); font-size: 14px; font-weight: 600; white-space: nowrap; }
+  .quiz-progress-bar { width: 100%; background: rgba(255,255,255,.06); flex-shrink: 0; padding: 8px 20px; display: flex; align-items: center; gap: 12px; }
+  .quiz-score-label { color: rgba(255,255,255,.5); font-size: 13px; font-weight: 600; white-space: nowrap; }
   .quiz-score-stars { display: flex; gap: 6px; }
-  .quiz-star { font-size: 26px; opacity: .25; transition: all .3s; }
+  .quiz-star { font-size: 22px; opacity: .25; transition: all .3s; }
   .quiz-star.filled { opacity: 1; animation: star-pop .4s cubic-bezier(.34,1.56,.64,1); }
   @keyframes star-pop { from { transform: scale(0) rotate(-30deg); } to { transform: scale(1) rotate(0); } }
 
-  .quiz-field-fade { width: 100%; height: 18px; flex-shrink: 0; background: linear-gradient(180deg, #237a40 0%, #060c1f 100%); }
-  .quiz-body { flex: 1; overflow-y: auto; width: 100%; padding: 8px 18px 18px; display: flex; flex-direction: column; align-items: center; gap: 10px; }
-  .quiz-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 22px; padding: 20px 18px; width: 100%; max-width: 580px; backdrop-filter: blur(16px); }
-  .quiz-match { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 14px; }
-  .quiz-team { display: flex; flex-direction: column; align-items: center; gap: 6px; flex: 1; }
-  .quiz-flag { font-size: 50px; line-height: 1; }
-  .quiz-tname { color: #fff; font-size: 15px; font-weight: 700; text-align: center; line-height: 1.2; }
-  .quiz-vs { color: rgba(255,255,255,.35); font-size: 26px; font-weight: 800; }
-  .quiz-date { color: rgba(255,255,255,.35); font-size: 13px; text-align: center; margin-top: -8px; margin-bottom: 12px; }
-  .quiz-question { color: #fff; font-size: 20px; font-weight: 800; text-align: center; margin-bottom: 16px; line-height: 1.4; }
-  .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .quiz-opt { background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.14); border-radius: 16px; padding: 16px 10px; color: #fff; font-size: 17px; font-weight: 700; cursor: pointer; transition: all .18s; text-align: center; }
+  .quiz-field-fade { width: 100%; height: 14px; flex-shrink: 0; background: linear-gradient(180deg, #237a40 0%, #060c1f 100%); }
+  .quiz-body { flex: 1; overflow-y: auto; width: 100%; padding: 6px 16px 14px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .quiz-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 16px 16px; width: 100%; max-width: 600px; backdrop-filter: blur(16px); }
+  .quiz-match { display: flex; align-items: center; justify-content: center; gap: 14px; margin-bottom: 12px; }
+  .quiz-team { display: flex; flex-direction: column; align-items: center; gap: 5px; flex: 1; }
+  .quiz-flag { font-size: 44px; line-height: 1; }
+  .quiz-tname { color: #fff; font-size: 14px; font-weight: 700; text-align: center; line-height: 1.2; }
+  .quiz-vs { color: rgba(255,255,255,.35); font-size: 22px; font-weight: 800; }
+  .quiz-date { color: rgba(255,255,255,.35); font-size: 12px; text-align: center; margin-top: -6px; margin-bottom: 10px; }
+  .quiz-question { color: #fff; font-size: 18px; font-weight: 800; text-align: center; margin-bottom: 12px; line-height: 1.4; }
+  .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+  .quiz-opt { background: rgba(255,255,255,.08); border: 2px solid rgba(255,255,255,.14); border-radius: 14px; padding: 13px 10px; color: #fff; font-size: 15px; font-weight: 700; cursor: pointer; transition: all .18s; text-align: center; }
   .quiz-opt:active { transform: scale(.96); }
   .quiz-opt.correct { background: rgba(34,197,94,.25); border-color: var(--verde); color: var(--verde); }
   .quiz-opt.wrong   { background: rgba(239,68,68,.2);  border-color: var(--vermelho); color: var(--vermelho); }
-  .quiz-feedback { padding: 12px 14px; border-radius: 14px; text-align: center; font-size: 16px; font-weight: 600; line-height: 1.4; display: none; }
+  .quiz-feedback { padding: 10px 12px; border-radius: 12px; text-align: center; font-size: 14px; font-weight: 600; line-height: 1.4; display: none; }
   .quiz-feedback.ok  { background: rgba(34,197,94,.15); color: var(--verde); border: 1.5px solid rgba(34,197,94,.3); }
   .quiz-feedback.err { background: rgba(239,68,68,.1);  color: rgba(255,255,255,.8); border: 1.5px solid rgba(239,68,68,.25); }
-  .btn-quiz-next { width: 100%; max-width: 580px; padding: 18px; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 16px; font-size: 20px; font-weight: 900; cursor: pointer; display: none; box-shadow: 0 8px 28px rgba(245,158,11,.4); }
+  .btn-quiz-next { width: 100%; max-width: 600px; padding: 16px; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 14px; font-size: 18px; font-weight: 900; cursor: pointer; display: none; box-shadow: 0 8px 28px rgba(245,158,11,.4); }
 
-  /* ════ CELEBRAÇÃO TRANSIÇÃO ════ */
+  /* ════ CELEBRAÇÃO ════ */
   #s-celebrate { background: linear-gradient(135deg, #0a0f1e 0%, #1a0a3e 50%, #0a1e0f 100%); }
-  .cel-content { display: flex; flex-direction: column; align-items: center; gap: 20px; }
-  .cel-icon { font-size: 110px; animation: cel-bounce 0.6s cubic-bezier(.34,1.56,.64,1) forwards, cel-spin 1.8s linear infinite 0.6s; }
+  .cel-content { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+  .cel-icon { font-size: 100px; animation: cel-bounce 0.6s cubic-bezier(.34,1.56,.64,1) forwards, cel-spin 1.8s linear infinite 0.6s; }
   @keyframes cel-bounce { from { transform: scale(0) rotate(-180deg); opacity: 0; } to { transform: scale(1) rotate(0); opacity: 1; } }
   @keyframes cel-spin { 0% { transform: rotate(0) scale(1); } 25% { transform: rotate(5deg) scale(1.05); } 75% { transform: rotate(-5deg) scale(1.05); } 100% { transform: rotate(0) scale(1); } }
-  .cel-title { color: #fff; font-size: 34px; font-weight: 900; text-align: center; animation: fade-up .5s ease .4s both; }
-  .cel-sub { color: rgba(255,255,255,.5); font-size: 18px; text-align: center; animation: fade-up .5s ease .6s both; }
+  .cel-title { color: #fff; font-size: 30px; font-weight: 900; text-align: center; animation: fade-up .5s ease .4s both; }
+  .cel-sub { color: rgba(255,255,255,.5); font-size: 16px; text-align: center; animation: fade-up .5s ease .6s both; }
   @keyframes fade-up { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   .cel-dots { display: flex; gap: 10px; animation: fade-up .5s ease .8s both; }
-  .cel-dot { width: 14px; height: 14px; border-radius: 50%; animation: dot-bounce 1.2s ease infinite; }
+  .cel-dot { width: 12px; height: 12px; border-radius: 50%; animation: dot-bounce 1.2s ease infinite; }
   .cel-dot:nth-child(2) { animation-delay: .2s; }
   .cel-dot:nth-child(3) { animation-delay: .4s; }
   @keyframes dot-bounce { 0%,80%,100% { transform: scale(0.6); opacity: .4; } 40% { transform: scale(1); opacity: 1; } }
 
-  /* ════ FORMULÁRIO ════ */
-  #s-form { gap: 0; justify-content: center; }
-  .mystery-prize { background: rgba(255,255,255,.05); border: 2px solid rgba(245,158,11,.4); border-radius: 22px; padding: 20px 28px; display: flex; align-items: center; gap: 18px; margin-bottom: 18px; width: 100%; max-width: 520px; animation: glow-prize 2s infinite; }
+  /* ════ FORMULÁRIO (landscape: linha) ════ */
+  #s-form {
+    flex-direction: row;
+    gap: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+  .form-left { display: flex; align-items: stretch; flex-shrink: 0; }
+  .form-right { display: flex; flex-direction: column; gap: 10px; flex-shrink: 0; }
+
+  .mystery-prize { background: rgba(255,255,255,.05); border: 2px solid rgba(245,158,11,.4); border-radius: 20px; padding: 24px 18px; display: flex; flex-direction: column; align-items: center; gap: 14px; text-align: center; width: 190px; animation: glow-prize 2s infinite; justify-content: center; }
   @keyframes glow-prize { 0%,100% { box-shadow: 0 0 16px rgba(245,158,11,.2); } 50% { box-shadow: 0 0 40px rgba(245,158,11,.6); } }
-  .mystery-icon { font-size: 58px; animation: bounce-icon 1.4s infinite; }
-  @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
-  .mystery-text strong { color: var(--amarelo); font-size: 19px; display: block; margin-bottom: 4px; }
-  .mystery-text span   { color: rgba(255,255,255,.5); font-size: 15px; }
-  .form-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 22px; padding: 30px 30px 26px; width: 100%; max-width: 520px; backdrop-filter: blur(16px); }
-  .form-card h2 { color: #fff; font-size: 24px; font-weight: 800; margin-bottom: 5px; }
-  .form-card p  { color: rgba(255,255,255,.45); font-size: 15px; margin-bottom: 22px; }
-  .field { margin-bottom: 15px; }
-  .field label { display: block; color: rgba(255,255,255,.55); font-size: 14px; margin-bottom: 7px; }
-  .field input { width: 100%; padding: 16px 20px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.13); border-radius: 14px; color: #fff; font-size: 19px; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
+  .mystery-icon { font-size: 54px; animation: bounce-icon 1.4s infinite; }
+  @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-7px); } }
+  .mystery-text strong { color: var(--amarelo); font-size: 15px; display: block; margin-bottom: 4px; }
+  .mystery-text span   { color: rgba(255,255,255,.5); font-size: 12px; }
+
+  .form-card { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 20px 22px 18px; width: 360px; backdrop-filter: blur(16px); }
+  .form-card h2 { color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 4px; }
+  .form-card p  { color: rgba(255,255,255,.45); font-size: 13px; margin-bottom: 16px; line-height: 1.5; }
+  .field { margin-bottom: 11px; }
+  .field label { display: block; color: rgba(255,255,255,.55); font-size: 13px; margin-bottom: 5px; }
+  .field input { width: 100%; padding: 13px 16px; background: rgba(255,255,255,.07); border: 2px solid rgba(255,255,255,.13); border-radius: 12px; color: #fff; font-size: 17px; outline: none; transition: border-color .2s; -webkit-appearance: none; appearance: none; }
   .field input:focus { border-color: var(--azul-c); }
   .field input::placeholder { color: rgba(255,255,255,.22); }
   .field input.err { border-color: var(--vermelho); }
-  .btn-reveal { width: 100%; padding: 20px; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 16px; font-size: 22px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 24px rgba(245,158,11,.45); transition: transform .12s, opacity .12s; margin-top: 6px; }
+  .btn-reveal { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 14px; font-size: 19px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 24px rgba(245,158,11,.45); transition: transform .12s, opacity .12s; margin-top: 4px; }
   .btn-reveal:active { transform: scale(.97); opacity: .9; }
-  .btn-skip { width: 100%; max-width: 520px; padding: 18px; background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.18); border-radius: 16px; color: rgba(255,255,255,.6); font-size: 18px; font-weight: 600; cursor: pointer; margin-top: 14px; transition: background .2s; }
+  .btn-skip { width: 360px; padding: 14px; background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.18); border-radius: 14px; color: rgba(255,255,255,.6); font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
   .btn-skip:active { background: rgba(255,255,255,.1); }
 
   /* ════ PRÊMIO ════ */
-  #s-result { gap: 20px; }
-  .prize-card { background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.15); border-radius: 28px; padding: 40px 34px; width: 100%; max-width: 520px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(16px); }
+  #s-result { gap: 16px; }
+  .prize-card { background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.15); border-radius: 26px; padding: 28px 32px; width: 100%; max-width: 500px; text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(16px); }
   .prize-card::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 50% 0%, rgba(245,158,11,.14) 0%, transparent 60%); pointer-events: none; }
   .prize-in { animation: pop-in .55s cubic-bezier(.34,1.56,.64,1); }
   @keyframes pop-in { from { transform: scale(.4) rotate(-8deg); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-  #p-icon { font-size: 80px; margin-bottom: 12px; }
-  .p-congrats { color: var(--amarelo); font-size: 14px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
-  #p-name { color: #fff; font-size: 30px; font-weight: 900; margin: 8px 0 10px; }
-  #p-desc { color: rgba(255,255,255,.55); font-size: 17px; line-height: 1.6; }
-  .btn-restart { background: none; border: 2px solid rgba(255,255,255,.22); color: rgba(255,255,255,.55); border-radius: 16px; padding: 16px 48px; font-size: 18px; cursor: pointer; transition: all .18s; }
+  #p-icon { font-size: 70px; margin-bottom: 10px; }
+  .p-congrats { color: var(--amarelo); font-size: 13px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  #p-name { color: #fff; font-size: 28px; font-weight: 900; margin: 7px 0 8px; }
+  #p-desc { color: rgba(255,255,255,.55); font-size: 15px; line-height: 1.6; }
+  .btn-restart { background: none; border: 2px solid rgba(255,255,255,.22); color: rgba(255,255,255,.55); border-radius: 14px; padding: 13px 44px; font-size: 16px; cursor: pointer; transition: all .18s; }
   .btn-restart:active { background: rgba(255,255,255,.08); }
 
   /* ════ CONFETTI ════ */
@@ -220,30 +240,30 @@
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
   /* ════ ADMIN ════ */
-  #s-admin { padding: 22px 20px; gap: 0; align-items: stretch; justify-content: flex-start; overflow-y: auto; }
+  #s-admin { padding: 16px 20px; gap: 0; align-items: stretch; justify-content: flex-start; overflow-y: auto; }
   .adm-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; flex-shrink: 0; flex-wrap: wrap; gap: 10px; }
-  .adm-hd h2 { color: #fff; font-size: 20px; }
-  .adm-btns { display: flex; gap: 10px; flex-wrap: wrap; }
-  .ab { padding: 11px 18px; border-radius: 11px; font-size: 15px; font-weight: 600; cursor: pointer; border: none; }
+  .adm-hd h2 { color: #fff; font-size: 18px; }
+  .adm-btns { display: flex; gap: 8px; flex-wrap: wrap; }
+  .ab { padding: 9px 16px; border-radius: 10px; font-size: 14px; font-weight: 600; cursor: pointer; border: none; }
   .ab-exp { background: var(--verde); color: #fff; }
   .ab-clr { background: var(--vermelho); color: #fff; }
   .ab-bk  { background: rgba(255,255,255,.1); color: #fff; }
-  .adm-ct { color: rgba(255,255,255,.35); font-size: 14px; margin-bottom: 12px; }
-  table { width: 100%; border-collapse: collapse; color: #fff; font-size: 14px; }
-  th { background: rgba(255,255,255,.06); padding: 11px 12px; text-align: left; color: rgba(255,255,255,.45); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; }
-  td { padding: 11px 12px; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: top; }
-  .bg { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+  .adm-ct { color: rgba(255,255,255,.35); font-size: 13px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; color: #fff; font-size: 13px; }
+  th { background: rgba(255,255,255,.06); padding: 10px 12px; text-align: left; color: rgba(255,255,255,.45); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: top; }
+  .bg { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .bg-g { background: rgba(34,197,94,.18); color: var(--verde); }
   .bg-b { background: rgba(30,86,200,.2); color: var(--ciano); }
-  .adm-empty { color: rgba(255,255,255,.25); text-align: center; padding: 50px; font-size: 16px; }
+  .adm-empty { color: rgba(255,255,255,.25); text-align: center; padding: 40px; font-size: 15px; }
 
   /* ════ FULLSCREEN ════ */
-  #fs-modal { position: fixed; inset: 0; z-index: 9999; background: #060c1f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 30px; padding: 40px; transition: opacity .4s ease; }
+  #fs-modal { position: fixed; inset: 0; z-index: 9999; background: #060c1f; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 24px; padding: 40px; transition: opacity .4s ease; }
   #fs-modal.hidden { opacity: 0; pointer-events: none; }
-  .fs-icon { font-size: 80px; animation: bounce-icon 1.6s infinite; }
-  .fs-title { color: #fff; font-size: 30px; font-weight: 900; text-align: center; }
-  .fs-sub   { color: rgba(255,255,255,.5); font-size: 18px; text-align: center; line-height: 1.6; }
-  .btn-fs { background: linear-gradient(135deg, var(--azul-c), var(--ciano)); color: #fff; border: none; border-radius: 60px; padding: 22px 60px; font-size: 22px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 32px rgba(30,86,200,.5); animation: pulse-btn 2s infinite; transition: transform .12s; }
+  .fs-icon { font-size: 70px; animation: bounce-icon 1.6s infinite; }
+  .fs-title { color: #fff; font-size: 28px; font-weight: 900; text-align: center; }
+  .fs-sub   { color: rgba(255,255,255,.5); font-size: 16px; text-align: center; line-height: 1.6; }
+  .btn-fs { background: linear-gradient(135deg, var(--azul-c), var(--ciano)); color: #fff; border: none; border-radius: 60px; padding: 20px 56px; font-size: 20px; font-weight: 800; cursor: pointer; box-shadow: 0 10px 32px rgba(30,86,200,.5); animation: pulse-btn 2s infinite; transition: transform .12s; }
   .btn-fs:active { transform: scale(.95); }
 </style>
 </head>
@@ -260,13 +280,74 @@
 
 <!-- ══ INÍCIO ══ -->
 <div class="screen active" id="s-start">
-  <div class="logo" id="logo-tap">
-    <div class="logo-icon">⚡</div>
-    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+
+  <!-- Coluna esquerda: logo + conteúdo do modo + botão + nav -->
+  <div class="start-left">
+    <div class="logo" id="logo-tap">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+    </div>
+
+    <!-- Painel: ROLETA (só headline — wheel fica na coluna direita) -->
+    <div class="mode-panel active" id="panel-wheel">
+      <div class="headline">
+        <h1>Gire e <em>Ganhe!</em></h1>
+        <p>Toque para descobrir seu brinde exclusivo</p>
+      </div>
+    </div>
+
+    <!-- Painel: CAÇA-NÍQUEL -->
+    <div class="mode-panel" id="panel-slot">
+      <div class="slot-preview">
+        <div class="slot-preview-title">🎰 Caça-Níquel</div>
+        <div class="slot-preview-reels">
+          <div class="slot-prev-reel">🍒</div>
+          <div class="slot-prev-reel">⭐</div>
+          <div class="slot-prev-reel">💎</div>
+        </div>
+        <div class="slot-preview-desc">Alinhe 3 símbolos iguais e ganhe um brinde!</div>
+        <div class="slot-preview-desc">Cada participante tem <strong style="color:var(--amarelo)">5 tentativas</strong></div>
+        <div class="slot-tries-badge">Tentativas restantes: <span id="tries-badge">5</span> / 5</div>
+      </div>
+    </div>
+
+    <!-- Painel: QUIZ -->
+    <div class="mode-panel" id="panel-quiz">
+      <div class="quiz-preview">
+        <div class="quiz-preview-header">
+          <div class="quiz-preview-trophies">🏆⚽🏆</div>
+          <div class="quiz-preview-title">Quiz Copa do Mundo 2026</div>
+          <div class="quiz-preview-sub-header">Acerte 2 perguntas e ganhe seu brinde!</div>
+        </div>
+        <div class="quiz-preview-body">
+          <div class="quiz-preview-sub">Perguntas sobre os jogos e curiosidades da Copa — continue tentando até acertar 2!</div>
+          <div class="quiz-preview-badge">🎁 Todo mundo ganha um brinde!</div>
+        </div>
+      </div>
+    </div>
+
+    <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
+
+    <div class="mode-nav">
+      <button class="btn-admin-small" id="btn-admin-tiny">⚙️</button>
+      <div class="mode-cycler">
+        <button class="btn-cycle" id="btn-mode-prev">‹</button>
+        <div class="mode-cycler-label">
+          <span class="mode-cycler-ico" id="mode-ico">🎡</span>
+          <span class="mode-cycler-txt" id="mode-lbl">Roleta</span>
+          <div class="mode-cycler-dots">
+            <div class="mode-dot active" id="mdot-0"></div>
+            <div class="mode-dot" id="mdot-1"></div>
+            <div class="mode-dot" id="mdot-2"></div>
+          </div>
+        </div>
+        <button class="btn-cycle" id="btn-mode-next">›</button>
+      </div>
+    </div>
   </div>
 
-  <div class="mode-panel active" id="panel-wheel">
-    <div class="headline"><h1>Gire e <em>Ganhe!</em></h1><p>Toque para descobrir seu brinde exclusivo</p></div>
+  <!-- Coluna direita: roleta (visível só no modo wheel) -->
+  <div class="start-right" id="start-right-wheel">
     <div class="wheel-wrap">
       <div class="wheel-pointer"></div>
       <canvas id="cv-idle" width="380" height="380"></canvas>
@@ -274,52 +355,6 @@
     </div>
   </div>
 
-  <div class="mode-panel" id="panel-slot">
-    <div class="slot-preview">
-      <div class="slot-preview-title">🎰 Caça-Níquel</div>
-      <div class="slot-preview-reels">
-        <div class="slot-prev-reel">🍒</div>
-        <div class="slot-prev-reel">⭐</div>
-        <div class="slot-prev-reel">💎</div>
-      </div>
-      <div class="slot-preview-desc">Alinhe 3 símbolos iguais e ganhe um brinde!</div>
-      <div class="slot-preview-desc">Cada participante tem <strong style="color:var(--amarelo)">5 tentativas</strong></div>
-      <div class="slot-tries-badge">Tentativas restantes: <span id="tries-badge">5</span> / 5</div>
-    </div>
-  </div>
-
-  <div class="mode-panel" id="panel-quiz">
-    <div class="quiz-preview">
-      <div class="quiz-preview-header">
-        <div class="quiz-preview-trophies">🏆⚽🏆</div>
-        <div class="quiz-preview-title">Quiz Copa do Mundo 2026</div>
-        <div class="quiz-preview-sub-header">Acerte 2 perguntas e ganhe seu brinde!</div>
-      </div>
-      <div class="quiz-preview-body">
-        <div class="quiz-preview-sub">Perguntas sobre os jogos e curiosidades da Copa — continue tentando até acertar 2!</div>
-        <div class="quiz-preview-badge">🎁 Todo mundo ganha um brinde!</div>
-      </div>
-    </div>
-  </div>
-
-  <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
-
-  <div class="mode-nav">
-    <button class="btn-admin-small" id="btn-admin-tiny">⚙️</button>
-    <div class="mode-cycler">
-      <button class="btn-cycle" id="btn-mode-prev">‹</button>
-      <div class="mode-cycler-label">
-        <span class="mode-cycler-ico" id="mode-ico">🎡</span>
-        <span class="mode-cycler-txt" id="mode-lbl">Roleta</span>
-        <div class="mode-cycler-dots">
-          <div class="mode-dot active" id="mdot-0"></div>
-          <div class="mode-dot" id="mdot-1"></div>
-          <div class="mode-dot" id="mdot-2"></div>
-        </div>
-      </div>
-      <button class="btn-cycle" id="btn-mode-next">›</button>
-    </div>
-  </div>
 </div>
 
 <!-- ══ GIRANDO ══ -->
@@ -367,7 +402,7 @@
       <span class="quiz-star" id="qstar-0">⭐</span>
       <span class="quiz-star" id="qstar-1">⭐</span>
     </div>
-    <div class="quiz-score-label" id="q-attempts-label" style="margin-left:auto;font-size:13px;"></div>
+    <div class="quiz-score-label" id="q-attempts-label" style="margin-left:auto;font-size:12px;"></div>
   </div>
   <div class="quiz-field-fade"></div>
   <div class="quiz-body">
@@ -408,21 +443,25 @@
 
 <!-- ══ FORMULÁRIO ══ -->
 <div class="screen" id="s-form">
-  <div class="mystery-prize">
-    <div class="mystery-icon">🎁</div>
-    <div class="mystery-text">
-      <strong>Seu prêmio foi definido!</strong>
-      <span>Preencha seus dados para revelar 👇</span>
+  <div class="form-left">
+    <div class="mystery-prize">
+      <div class="mystery-icon">🎁</div>
+      <div class="mystery-text">
+        <strong>Seu prêmio foi definido!</strong>
+        <span>Preencha seus dados para revelar 👇</span>
+      </div>
     </div>
   </div>
-  <div class="form-card">
-    <h2>Quase lá!</h2>
-    <p>Só precisamos de duas informações para liberar seu brinde</p>
-    <div class="field"><label>Seu nome</label><input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off"></div>
-    <div class="field"><label>WhatsApp</label><input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off" inputmode="tel"></div>
-    <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
+  <div class="form-right">
+    <div class="form-card">
+      <h2>Quase lá!</h2>
+      <p>Só precisamos de duas informações para liberar seu brinde</p>
+      <div class="field"><label>Seu nome</label><input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off"></div>
+      <div class="field"><label>WhatsApp</label><input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off" inputmode="tel"></div>
+      <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
+    </div>
+    <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
   </div>
-  <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
 </div>
 
 <!-- ══ PRÊMIO ══ -->
@@ -477,7 +516,6 @@ const SLOT_SYMS = [
   { emoji:'🍀', color:'#16a34a' },
 ];
 
-// Partidas Copa 2026
 const PARTIDAS = [
   { fa:'🇲🇽', ta:'México',          sa:2, fb:'🇿🇦', tb:'África do Sul',   sb:0, data:'11/06' },
   { fa:'🇰🇷', ta:'Coreia do Sul',    sa:2, fb:'🇨🇿', tb:'Tchéquia',        sb:1, data:'11/06' },
@@ -492,80 +530,19 @@ const PARTIDAS = [
   { fa:'🇨🇮', ta:'Costa do Marfim', sa:1, fb:'🇪🇨', tb:'Equador',         sb:0, data:'14/06' },
 ];
 
-// Perguntas gerais fáceis sobre a Copa 2026
 const PERGUNTAS_GERAIS = [
-  {
-    q: 'Em quantos países a Copa do Mundo 2026 é sediada?',
-    opts: ['3 países', '2 países', '1 país', '4 países'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Quais países sediam a Copa do Mundo 2026?',
-    opts: ['EUA, México e Canadá', 'Brasil, Argentina e Chile', 'EUA, México e Brasil', 'França, Espanha e Portugal'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Quantas seleções participam da Copa do Mundo 2026?',
-    opts: ['48 seleções', '32 seleções', '36 seleções', '64 seleções'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'A Copa do Mundo 2026 é realizada em qual continente (principalmente)?',
-    opts: ['América do Norte', 'América do Sul', 'Europa', 'África'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Qual país estreou como sede da Copa na edição de 2026?',
-    opts: ['Canadá', 'México', 'Estados Unidos', 'Brasil'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'A Copa do Mundo 2026 é a quantième edição do torneio?',
-    opts: ['23ª edição', '21ª edição', '25ª edição', '20ª edição'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Qual é o Brasil na Copa do Mundo 2026?',
-    opts: ['Grupo C', 'Grupo A', 'Grupo B', 'Grupo D'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Qual país tem mais títulos mundiais até 2026?',
-    opts: ['Brasil (5 títulos)', 'Alemanha (4)', 'Itália (4)', 'Argentina (3)'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Em que mês começa a Copa do Mundo 2026?',
-    opts: ['Junho', 'Julho', 'Maio', 'Agosto'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Qual cidade dos EUA sedia a final da Copa 2026?',
-    opts: ['Nova York / New Jersey', 'Los Angeles', 'Miami', 'Dallas'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'Qual país NÃO é sede da Copa do Mundo 2026?',
-    opts: ['Brasil', 'Canadá', 'México', 'Estados Unidos'],
-    correta: 0,
-    tipo: 'geral'
-  },
-  {
-    q: 'A seleção do Brasil jogou qual jogo na Copa 2026 até agora?',
-    opts: ['1×1 com Marrocos', '2×0 com Argentina', '3×1 com Portugal', '0×0 com França'],
-    correta: 0,
-    tipo: 'geral'
-  },
+  { q:'Em quantos países a Copa do Mundo 2026 é sediada?', opts:['3 países','2 países','1 país','4 países'], correta:0 },
+  { q:'Quais países sediam a Copa do Mundo 2026?', opts:['EUA, México e Canadá','Brasil, Argentina e Chile','EUA, México e Brasil','França, Espanha e Portugal'], correta:0 },
+  { q:'Quantas seleções participam da Copa do Mundo 2026?', opts:['48 seleções','32 seleções','36 seleções','64 seleções'], correta:0 },
+  { q:'A Copa do Mundo 2026 é realizada em qual continente (principalmente)?', opts:['América do Norte','América do Sul','Europa','África'], correta:0 },
+  { q:'Qual país estreou como sede da Copa na edição de 2026?', opts:['Canadá','México','Estados Unidos','Brasil'], correta:0 },
+  { q:'A Copa do Mundo 2026 é a quantième edição do torneio?', opts:['23ª edição','21ª edição','25ª edição','20ª edição'], correta:0 },
+  { q:'Qual é o grupo do Brasil na Copa do Mundo 2026?', opts:['Grupo C','Grupo A','Grupo B','Grupo D'], correta:0 },
+  { q:'Qual país tem mais títulos mundiais até 2026?', opts:['Brasil (5 títulos)','Alemanha (4)','Itália (4)','Argentina (3)'], correta:0 },
+  { q:'Em que mês começa a Copa do Mundo 2026?', opts:['Junho','Julho','Maio','Agosto'], correta:0 },
+  { q:'Qual cidade dos EUA sedia a final da Copa 2026?', opts:['Nova York / New Jersey','Los Angeles','Miami','Dallas'], correta:0 },
+  { q:'Qual país NÃO é sede da Copa do Mundo 2026?', opts:['Brasil','Canadá','México','Estados Unidos'], correta:0 },
+  { q:'A seleção do Brasil jogou qual jogo na Copa 2026 até agora?', opts:['1×1 com Marrocos','2×0 com Argentina','3×1 com Portugal','0×0 com França'], correta:0 },
 ];
 
 // ════════════════════════════════
@@ -580,7 +557,7 @@ let slotTries    = 5;
 let slotSpinning = false;
 let quizAnswered = false;
 let quizUsed     = [];
-let quizScore    = 0;   // acertos nesta rodada (precisa de 2)
+let quizScore    = 0;
 let quizAttempts = 0;
 
 // ════════════════════════════════
@@ -698,7 +675,6 @@ function go(id) {
   if (id === 's-start') requestAnimationFrame(idleLoop);
 }
 
-// Transição animada para o formulário
 function goCelebrate() {
   confetti(); sndWin();
   go('s-celebrate');
@@ -839,7 +815,7 @@ function onSlotEnd(isWin) {
 }
 
 // ════════════════════════════════
-// QUIZ — acertar 2 para ganhar
+// QUIZ
 // ════════════════════════════════
 const QUIZ_GOAL = 2;
 
@@ -865,20 +841,16 @@ function loadNextQuizQuestion() {
   document.getElementById('q-feedback').style.display='none';
   document.getElementById('q-feedback').className='quiz-feedback';
 
-  // Mistura perguntas de partidas e gerais
   const usarGeral = Math.random() < 0.45 && PERGUNTAS_GERAIS.length > 0;
 
   if (usarGeral) {
-    // pergunta geral
     const idx = Math.floor(Math.random() * PERGUNTAS_GERAIS.length);
     const pq = PERGUNTAS_GERAIS[idx];
-    // Oculta a área de times (match display)
     document.getElementById('q-match-display').style.display = 'none';
     document.getElementById('q-date').textContent = '🏆 Copa do Mundo 2026';
     document.getElementById('q-question').textContent = pq.q;
     const optsEl=document.getElementById('q-opts');
     optsEl.innerHTML='';
-    // Embaralha as opções mantendo rastreio da correta
     const indices = pq.opts.map((_,i)=>i);
     shuffle(indices);
     const correctOpt = pq.opts[pq.correta];
@@ -889,7 +861,6 @@ function loadNextQuizQuestion() {
       optsEl.appendChild(b);
     });
   } else {
-    // pergunta de partida
     document.getElementById('q-match-display').style.display='';
     const available=PARTIDAS.map((_,i)=>i).filter(i=>!quizUsed.includes(i));
     const pool=available.length>0?available:PARTIDAS.map((_,i)=>i);
@@ -983,7 +954,7 @@ function showPrize(){
 }
 
 // ════════════════════════════════
-// BOTÕES + MODO
+// MODOS DE JOGO
 // ════════════════════════════════
 const MODES = [
   { id:'wheel', ico:'🎡', lbl:'Roleta',      spinBtn:'GIRAR AGORA'    },
@@ -1001,6 +972,9 @@ function setMode(mode){
   document.getElementById('mode-lbl').textContent = MODES[modeIdx].lbl;
   document.getElementById('btn-spin').textContent  = MODES[modeIdx].spinBtn;
   MODES.forEach((_,i)=>document.getElementById('mdot-'+i).classList.toggle('active',i===modeIdx));
+  // Mostra roleta na coluna direita só no modo wheel
+  const rightCol = document.getElementById('start-right-wheel');
+  rightCol.style.display = mode === 'wheel' ? '' : 'none';
 }
 function cycleMode(dir){
   getAC(); sndClick();

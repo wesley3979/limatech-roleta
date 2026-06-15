@@ -1,0 +1,811 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>LimaTech — Gire e Ganhe</title>
+<style>
+  :root {
+    --azul: #0a2463;
+    --azul-c: #1e56c8;
+    --verde: #22c55e;
+    --amarelo: #f59e0b;
+    --laranja: #f97316;
+    --ciano: #06b6d4;
+    --roxo: #8b5cf6;
+    --vermelho: #ef4444;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+
+  html, body {
+    width: 100%; height: 100%;
+    background: linear-gradient(135deg, #060c1f 0%, #0a1a3e 50%, #060c1f 100%);
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    overflow: hidden; user-select: none;
+  }
+
+  #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
+
+  /* ── TELAS ── */
+  .screen {
+    position: absolute; inset: 0;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    opacity: 0; pointer-events: none;
+    transition: opacity .35s ease;
+    z-index: 1; padding: 14px 20px;
+  }
+  .screen.active { opacity: 1; pointer-events: all; }
+
+  /* ── LOGO ── */
+  .logo {
+    display: flex; align-items: center; gap: 10px;
+    cursor: pointer;
+  }
+  .logo-icon {
+    width: 40px; height: 40px;
+    background: linear-gradient(135deg, var(--azul-c), var(--ciano));
+    border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 20px; box-shadow: 0 0 20px rgba(30,86,200,.45);
+    flex-shrink: 0;
+  }
+  .logo-txt strong { color: #fff; font-size: 18px; display: block; }
+  .logo-txt small { color: rgba(255,255,255,.45); font-size: 10px; letter-spacing: 1px; text-transform: uppercase; }
+
+  /* ── ROLETA ── */
+  .wheel-wrap {
+    position: relative;
+    width: min(290px, 40vh); height: min(290px, 40vh);
+    filter: drop-shadow(0 0 28px rgba(30,86,200,.55));
+    flex-shrink: 0;
+  }
+  .wheel-wrap canvas { width: 100%; height: 100%; border-radius: 50%; }
+  .wheel-pointer {
+    position: absolute; top: -13px; left: 50%;
+    transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 13px solid transparent;
+    border-right: 13px solid transparent;
+    border-top: 26px solid var(--amarelo);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,.6));
+    z-index: 2;
+  }
+  .wheel-center {
+    position: absolute; top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+    width: 48px; height: 48px;
+    background: radial-gradient(circle, #fff 20%, #e2e8f0 100%);
+    border-radius: 50%;
+    box-shadow: 0 0 0 4px var(--azul), 0 0 18px rgba(0,0,0,.5);
+    z-index: 3;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+  }
+
+  /* ══════════════════════════════════════════
+     TELA 1 — INÍCIO (landscape: linha)
+  ══════════════════════════════════════════ */
+  #s-start {
+    flex-direction: row;
+    gap: 40px;
+    justify-content: center;
+    align-items: center;
+  }
+  .start-left {
+    display: flex; flex-direction: column;
+    align-items: center; gap: 18px;
+    flex-shrink: 0;
+  }
+
+  .headline { text-align: center; }
+  .headline h1 {
+    color: #fff; font-size: 34px; font-weight: 800;
+    line-height: 1.1; text-shadow: 0 0 40px rgba(30,86,200,.8);
+  }
+  .headline h1 em { color: var(--amarelo); font-style: normal; }
+  .headline p { color: rgba(255,255,255,.55); font-size: 14px; margin-top: 6px; }
+
+  .btn-spin {
+    background: linear-gradient(135deg, var(--amarelo), var(--laranja));
+    color: #fff; border: none; border-radius: 56px;
+    padding: 16px 52px; font-size: 20px; font-weight: 800;
+    cursor: pointer; letter-spacing: .5px;
+    box-shadow: 0 8px 28px rgba(245,158,11,.5);
+    animation: pulse-btn 2s infinite;
+    transition: transform .12s;
+  }
+  .btn-spin:active { transform: scale(.95); }
+  @keyframes pulse-btn {
+    0%,100% { box-shadow: 0 8px 28px rgba(245,158,11,.4); }
+    50% { box-shadow: 0 8px 50px rgba(245,158,11,.85); }
+  }
+
+  /* ══════════════════════════════════════════
+     TELA 2 — GIRANDO
+  ══════════════════════════════════════════ */
+  #s-spin { gap: 14px; }
+  .spin-label { color: rgba(255,255,255,.55); font-size: 16px; animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: .2; } }
+
+  /* ══════════════════════════════════════════
+     TELA 3 — FORMULÁRIO (landscape: linha)
+  ══════════════════════════════════════════ */
+  #s-form {
+    flex-direction: row;
+    gap: 18px;
+    align-items: center;
+    justify-content: center;
+  }
+  .form-left {
+    display: flex;
+    align-items: stretch;
+    flex-shrink: 0;
+  }
+  .form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-shrink: 0;
+  }
+
+  .mystery-prize {
+    background: rgba(255,255,255,.05);
+    border: 2px solid rgba(245,158,11,.4);
+    border-radius: 20px;
+    padding: 24px 18px;
+    display: flex; flex-direction: column;
+    align-items: center; gap: 14px; text-align: center;
+    width: 195px;
+    animation: glow-prize 2s infinite;
+    justify-content: center;
+  }
+  @keyframes glow-prize {
+    0%,100% { box-shadow: 0 0 16px rgba(245,158,11,.2); }
+    50% { box-shadow: 0 0 32px rgba(245,158,11,.5); }
+  }
+  .mystery-icon { font-size: 54px; animation: bounce-icon 1.4s infinite; }
+  @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+  .mystery-text strong { color: var(--amarelo); font-size: 14px; display: block; margin-bottom: 4px; }
+  .mystery-text span { color: rgba(255,255,255,.55); font-size: 12px; }
+
+  .form-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 20px;
+    padding: 22px 22px 18px;
+    width: 380px;
+    backdrop-filter: blur(16px);
+  }
+  .form-card h2 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 3px; }
+  .form-card p { color: rgba(255,255,255,.5); font-size: 12px; margin-bottom: 14px; line-height: 1.5; }
+
+  .field { margin-bottom: 10px; }
+  .field label { display: block; color: rgba(255,255,255,.6); font-size: 12px; margin-bottom: 4px; letter-spacing: .3px; }
+  .field input {
+    width: 100%; padding: 11px 14px;
+    background: rgba(255,255,255,.07);
+    border: 1.5px solid rgba(255,255,255,.13);
+    border-radius: 10px; color: #fff; font-size: 16px;
+    outline: none; transition: border-color .2s;
+    -webkit-appearance: none; appearance: none;
+  }
+  .field input:focus { border-color: var(--azul-c); }
+  .field input::placeholder { color: rgba(255,255,255,.25); }
+  .field input.err { border-color: var(--vermelho); }
+
+  .btn-reveal {
+    width: 100%; padding: 14px;
+    background: linear-gradient(135deg, var(--amarelo), var(--laranja));
+    color: #fff; border: none; border-radius: 12px;
+    font-size: 17px; font-weight: 800; cursor: pointer;
+    box-shadow: 0 6px 20px rgba(245,158,11,.4);
+    transition: transform .12s, opacity .12s;
+    margin-top: 4px;
+  }
+  .btn-reveal:active { transform: scale(.97); opacity: .9; }
+
+  .btn-skip {
+    width: 380px;
+    padding: 13px;
+    background: rgba(255,255,255,.06);
+    border: 1.5px solid rgba(255,255,255,.2);
+    border-radius: 12px;
+    color: rgba(255,255,255,.7);
+    font-size: 14px; font-weight: 600;
+    cursor: pointer;
+    transition: background .2s, border-color .2s;
+  }
+  .btn-skip:active { background: rgba(255,255,255,.12); }
+
+  /* ══════════════════════════════════════════
+     TELA 4 — PERGUNTA
+  ══════════════════════════════════════════ */
+  #s-question { gap: 12px; }
+
+  .q-card {
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 22px; padding: 22px 28px;
+    width: 100%; max-width: 580px;
+    text-align: center; backdrop-filter: blur(16px);
+  }
+  .q-card .q-icon { font-size: 36px; margin-bottom: 8px; }
+  .q-card h2 { color: #fff; font-size: 18px; font-weight: 700; margin-bottom: 4px; }
+  .q-card p { color: rgba(255,255,255,.55); font-size: 13px; margin-bottom: 16px; }
+
+  .opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .opt {
+    background: rgba(255,255,255,.07);
+    border: 1.5px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 12px 10px;
+    color: #fff; font-size: 13px; font-weight: 600;
+    cursor: pointer; transition: all .18s; text-align: center; line-height: 1.3;
+  }
+  .opt .oi { font-size: 22px; display: block; margin-bottom: 4px; }
+  .opt:active { background: rgba(30,86,200,.35); border-color: var(--azul-c); transform: scale(.96); }
+
+  .btn-skip-q {
+    background: none; border: none;
+    color: rgba(255,255,255,.3); font-size: 14px;
+    cursor: pointer; text-decoration: underline;
+  }
+
+  /* ══════════════════════════════════════════
+     TELA 5 — PRÊMIO
+  ══════════════════════════════════════════ */
+  #s-result { gap: 14px; }
+
+  .prize-card {
+    background: rgba(255,255,255,.05);
+    border: 2px solid rgba(255,255,255,.15);
+    border-radius: 26px; padding: 26px 32px;
+    width: 100%; max-width: 480px;
+    text-align: center;
+    position: relative; overflow: hidden;
+    backdrop-filter: blur(16px);
+  }
+  .prize-card::before {
+    content: ''; position: absolute; inset: 0;
+    background: radial-gradient(circle at 50% 0%, rgba(245,158,11,.14) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .prize-in { animation: pop-in .55s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes pop-in { from { transform: scale(.4) rotate(-8deg); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+  #p-icon { font-size: 58px; margin-bottom: 8px; }
+  .p-congrats { color: var(--amarelo); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
+  #p-name { color: #fff; font-size: 26px; font-weight: 800; margin: 5px 0 7px; }
+  #p-desc { color: rgba(255,255,255,.6); font-size: 13px; line-height: 1.6; }
+  #p-pain {
+    display: none; margin-top: 12px;
+    background: rgba(30,86,200,.25); border: 1px solid rgba(30,86,200,.4);
+    color: var(--ciano); font-size: 13px; font-weight: 600;
+    padding: 6px 14px; border-radius: 20px; display: inline-block;
+  }
+
+  .btn-restart {
+    background: none; border: 1.5px solid rgba(255,255,255,.2);
+    color: rgba(255,255,255,.55); border-radius: 12px;
+    padding: 11px 36px; font-size: 15px; cursor: pointer;
+    transition: all .18s;
+  }
+  .btn-restart:active { background: rgba(255,255,255,.08); }
+
+  /* ── CONFETTI ── */
+  .cf {
+    position: fixed; top: -20px; pointer-events: none; z-index: 999;
+    border-radius: 2px; animation: fall linear forwards;
+  }
+  @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
+
+  /* ── ADMIN ── */
+  #s-admin {
+    padding: 16px 20px; gap: 0;
+    align-items: stretch; justify-content: flex-start;
+    overflow-y: auto;
+  }
+  .adm-hd {
+    display: flex; justify-content: space-between; align-items: center;
+    margin-bottom: 12px; flex-shrink: 0;
+  }
+  .adm-hd h2 { color: #fff; font-size: 18px; }
+  .adm-btns { display: flex; gap: 8px; }
+  .ab {
+    padding: 8px 14px; border-radius: 9px;
+    font-size: 13px; font-weight: 600; cursor: pointer; border: none;
+  }
+  .ab-exp { background: var(--verde); color: #fff; }
+  .ab-clr { background: var(--vermelho); color: #fff; }
+  .ab-bk { background: rgba(255,255,255,.1); color: #fff; }
+  .adm-ct { color: rgba(255,255,255,.4); font-size: 12px; margin-bottom: 10px; }
+  table { width: 100%; border-collapse: collapse; color: #fff; font-size: 12px; }
+  th { background: rgba(255,255,255,.07); padding: 9px 10px; text-align: left; color: rgba(255,255,255,.5); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.07); }
+  td { padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,.04); }
+  .bg { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
+  .bg-g { background: rgba(34,197,94,.18); color: var(--verde); }
+  .bg-b { background: rgba(30,86,200,.2); color: var(--ciano); }
+  .adm-empty { color: rgba(255,255,255,.3); text-align: center; padding: 40px; }
+
+  /* ══════════════════════════════════════════
+     PORTRAIT — coluna (fallback p/ retrato)
+  ══════════════════════════════════════════ */
+  @media (orientation: portrait) {
+    .screen { padding: 24px; }
+
+    /* Tela 1 */
+    #s-start { flex-direction: column; gap: 20px; }
+    .start-left { gap: 20px; }
+    .wheel-wrap { width: min(370px, 82vw); height: min(370px, 82vw); }
+    .headline h1 { font-size: 36px; }
+
+    /* Tela 3 */
+    #s-form { flex-direction: column; gap: 0; align-items: center; }
+    .form-left { width: 100%; max-width: 440px; justify-content: center; }
+    .mystery-prize {
+      flex-direction: row; text-align: left;
+      width: 100%; max-width: 440px;
+      margin-bottom: 20px; padding: 20px 22px;
+    }
+    .mystery-icon { font-size: 52px; flex-shrink: 0; }
+    .form-right { width: 100%; max-width: 440px; gap: 0; }
+    .form-card { width: 100%; }
+    .btn-skip { width: 100%; max-width: 440px; margin-top: 12px; }
+
+    /* Tela 4 */
+    #s-question { gap: 20px; }
+    .q-card { padding: 32px 28px; }
+    .q-card .q-icon { font-size: 44px; margin-bottom: 12px; }
+    .q-card h2 { font-size: 20px; }
+    .q-card p { margin-bottom: 24px; }
+
+    /* Tela 5 */
+    #s-result { gap: 18px; }
+    .prize-card { padding: 36px 32px; }
+    #p-icon { font-size: 68px; }
+    #p-name { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<canvas id="particles"></canvas>
+
+<!-- ══ TELA 1: INÍCIO ══ -->
+<div class="screen active" id="s-start">
+  <div class="start-left">
+    <div class="logo" id="logo-tap">
+      <div class="logo-icon">⚡</div>
+      <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+    </div>
+
+    <div class="headline">
+      <h1>Gire e <em>Ganhe!</em></h1>
+      <p>Toque para descobrir seu brinde exclusivo</p>
+    </div>
+
+    <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
+  </div>
+
+  <div class="wheel-wrap">
+    <div class="wheel-pointer"></div>
+    <canvas id="cv-idle" width="370" height="370"></canvas>
+    <div class="wheel-center">🎁</div>
+  </div>
+</div>
+
+<!-- ══ TELA 2: GIRANDO ══ -->
+<div class="screen" id="s-spin">
+  <div class="wheel-wrap">
+    <div class="wheel-pointer"></div>
+    <canvas id="cv-spin" width="370" height="370"></canvas>
+    <div class="wheel-center">🎁</div>
+  </div>
+  <div class="spin-label">A sorte está sendo lançada...</div>
+</div>
+
+<!-- ══ TELA 3: FORMULÁRIO ══ -->
+<div class="screen" id="s-form">
+  <div class="form-left">
+    <div class="mystery-prize">
+      <div class="mystery-icon">🎁</div>
+      <div class="mystery-text">
+        <strong>Seu prêmio foi definido!</strong>
+        <span>Preencha seus dados para revelar 👇</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="form-right">
+    <div class="form-card">
+      <h2>Quase lá!</h2>
+      <p>Seu número fica guardado só para um possível contato futuro — sem compromisso nenhum 😉</p>
+
+      <div class="field">
+        <label>Seu nome</label>
+        <input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off">
+      </div>
+      <div class="field">
+        <label>WhatsApp</label>
+        <input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off">
+      </div>
+
+      <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
+    </div>
+
+    <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
+  </div>
+</div>
+
+<!-- ══ TELA 4: PERGUNTA ══ -->
+<div class="screen" id="s-question">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+  </div>
+  <div class="q-card">
+    <div class="q-icon">🤔</div>
+    <h2>Pergunta rápida...</h2>
+    <p>Qual situação mais acontece na sua gestão hoje?</p>
+    <div class="opts">
+      <button class="opt" data-pain="Controle de Ponto e Jornada">
+        <span class="oi">⏱️</span>Controle de frequência dos servidores
+      </button>
+      <button class="opt" data-pain="Atendimento em Saúde">
+        <span class="oi">🏥</span>Gestão de atendimento em saúde
+      </button>
+      <button class="opt" data-pain="Sessões da Câmara">
+        <span class="oi">🏛️</span>Organização das sessões da câmara
+      </button>
+      <button class="opt" data-pain="Filas e Atendimento ao Público">
+        <span class="oi">📋</span>Filas e agendamento de serviços
+      </button>
+    </div>
+  </div>
+  <button class="btn-skip-q" id="btn-skip-q">Pular essa etapa</button>
+</div>
+
+<!-- ══ TELA 5: PRÊMIO ══ -->
+<div class="screen" id="s-result">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+  </div>
+  <div class="prize-card" id="prize-card">
+    <div class="prize-in">
+      <div id="p-icon">🎁</div>
+      <div class="p-congrats">Parabéns! Você ganhou</div>
+      <div id="p-name"></div>
+      <div id="p-desc"></div>
+      <div id="p-pain"></div>
+    </div>
+  </div>
+  <button class="btn-restart" id="btn-restart">Nova rodada</button>
+</div>
+
+<!-- ══ ADMIN ══ -->
+<div class="screen" id="s-admin">
+  <div class="adm-hd">
+    <h2>⚙️ Leads</h2>
+    <div class="adm-btns">
+      <button class="ab ab-exp" id="btn-exp">Exportar CSV</button>
+      <button class="ab ab-clr" id="btn-clr">Limpar</button>
+      <button class="ab ab-bk" id="btn-bk">← Voltar</button>
+    </div>
+  </div>
+  <div class="adm-ct" id="adm-ct"></div>
+  <div id="adm-body"></div>
+</div>
+
+<script>
+// ══ PRÊMIOS ══
+const SEGS = [
+  { label: 'Kit\nCompleto',      icon: '🎁', color: '#1e56c8', prize: 'Kit LimaTech Completo',    desc: 'Mousepad + Caneta + Caderneta LimaTech. Retire agora com nossa equipe!', emoji: '🎁' },
+  { label: 'Mousepad\n+ Caneta', icon: '🖱️', color: '#8b5cf6', prize: 'Mousepad + Caneta',         desc: 'Mousepad personalizado + Caneta LimaTech. Retire com nossa equipe!',       emoji: '🖱️' },
+  { label: 'Kit\nCompleto',      icon: '🎁', color: '#06b6d4', prize: 'Kit LimaTech Completo',    desc: 'Mousepad + Caneta + Caderneta LimaTech. Retire agora com nossa equipe!', emoji: '🎁' },
+  { label: 'Caneta\n+\nCaderneta', icon: '📓', color: '#f59e0b', prize: 'Caneta + Caderneta',       desc: 'Caneta + Caderneta personalizadas LimaTech. Retire com nossa equipe!',     emoji: '📓' },
+  { label: 'Kit\nCompleto',      icon: '🎁', color: '#22c55e', prize: 'Kit LimaTech Completo',    desc: 'Mousepad + Caneta + Caderneta LimaTech. Retire agora com nossa equipe!', emoji: '🎁' },
+  { label: 'Caneta\nLimaTech',   icon: '🖊️', color: '#ef4444', prize: 'Caneta LimaTech',          desc: 'Caneta personalizada LimaTech. Retire agora com nossa equipe no estande!', emoji: '🖊️' },
+];
+
+// ══ ESTADO ══
+let cur = 's-start';
+let seg = null;
+let lead = null;
+let idleAngle = 0;
+let spinAngle = 0;
+
+// ══ AUDIO ══
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+const resume = () => AC.state === 'suspended' && AC.resume();
+
+function tone(freq, type, vol, dur, delay = 0) {
+  const o = AC.createOscillator(), g = AC.createGain();
+  o.connect(g); g.connect(AC.destination);
+  o.frequency.value = freq; o.type = type;
+  const t = AC.currentTime + delay;
+  g.gain.setValueAtTime(0, t);
+  g.gain.linearRampToValueAtTime(vol, t + .02);
+  g.gain.exponentialRampToValueAtTime(.001, t + dur);
+  o.start(t); o.stop(t + dur);
+}
+const tick  = () => tone(900, 'square', .12, .055);
+const click = () => tone(440, 'sine',   .18, .08);
+const win   = () => [523,659,784,1047].forEach((f,i) => tone(f,'sine',.32,.35,i*.11));
+
+// ══ PARTÍCULAS ══
+(function() {
+  const c = document.getElementById('particles');
+  const x = c.getContext('2d');
+  c.width = window.innerWidth; c.height = window.innerHeight;
+  const pts = Array.from({length:55},()=>({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    r:Math.random()*1.4+.4, vx:(Math.random()-.5)*.28, vy:(Math.random()-.5)*.28,
+    a:Math.random()*.5+.1
+  }));
+  (function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+      x.beginPath(); x.arc(p.x,p.y,p.r,0,Math.PI*2);
+      x.fillStyle=`rgba(30,86,200,${p.a})`; x.fill();
+    });
+    requestAnimationFrame(draw);
+  })();
+})();
+
+// ══ DESENHO DA ROLETA ══
+function drawWheel(canvas, angle) {
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, cx = W/2, cy = W/2, R = cx - 4;
+  const n = SEGS.length, arc = Math.PI*2/n;
+  ctx.clearRect(0,0,W,W);
+
+  SEGS.forEach((s,i) => {
+    const a0 = angle + i*arc - Math.PI/2;
+    const a1 = a0 + arc;
+
+    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 10;
+    ctx.beginPath(); ctx.moveTo(cx,cy); ctx.arc(cx,cy,R,a0,a1); ctx.closePath();
+    ctx.fillStyle = s.color; ctx.fill();
+    ctx.shadowBlur = 0;
+    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1.5; ctx.stroke();
+
+    ctx.save(); ctx.translate(cx,cy); ctx.rotate(a0 + arc/2);
+
+    ctx.font = '22px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fff'; ctx.fillText(s.icon, R*.67, 0);
+
+    const lines = s.label.split('\n');
+    ctx.font = 'bold 13px Segoe UI,sans-serif';
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(0,0,0,.9)'; ctx.shadowBlur = 5;
+    const lineH = 15;
+    lines.forEach((ln,li) => {
+      const yOff = (li - (lines.length-1)/2) * lineH;
+      ctx.fillText(ln, R*.40, yOff);
+    });
+
+    ctx.restore();
+  });
+
+  ctx.beginPath(); ctx.arc(cx,cy,R,0,Math.PI*2);
+  ctx.strokeStyle = 'rgba(255,255,255,.25)'; ctx.lineWidth = 3; ctx.stroke();
+}
+
+const cvIdle = document.getElementById('cv-idle');
+const cvSpin = document.getElementById('cv-spin');
+
+function idleLoop() {
+  idleAngle += .0035;
+  drawWheel(cvIdle, idleAngle);
+  if (cur === 's-start') requestAnimationFrame(idleLoop);
+}
+drawWheel(cvIdle, 0);
+requestAnimationFrame(idleLoop);
+
+// ══ NAVEGAÇÃO ══
+function go(id) {
+  document.getElementById(cur).classList.remove('active');
+  document.getElementById(id).classList.add('active');
+  cur = id;
+  if (id === 's-start') requestAnimationFrame(idleLoop);
+}
+
+// ══ CONFETTI ══
+function confetti() {
+  const cols = ['#f59e0b','#22c55e','#1e56c8','#ef4444','#8b5cf6','#06b6d4','#fff'];
+  for (let i = 0; i < 90; i++) {
+    const el = document.createElement('div');
+    el.className = 'cf';
+    el.style.cssText = `left:${Math.random()*100}vw;width:${Math.random()*10+5}px;height:${Math.random()*14+7}px;background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${Math.random()*2+1.8}s;animation-delay:${Math.random()*.7}s`;
+    document.body.appendChild(el);
+    el.addEventListener('animationend', ()=>el.remove());
+  }
+}
+
+// ══ SPIN ══
+function getTopIdx(angle) {
+  const arc = Math.PI*2/SEGS.length;
+  const norm = ((-(angle % (Math.PI*2))) + Math.PI*2) % (Math.PI*2);
+  return Math.floor(norm/arc) % SEGS.length;
+}
+
+function doSpin(targetIdx) {
+  drawWheel(cvSpin, spinAngle);
+  const arc = Math.PI*2/SEGS.length;
+  const n = SEGS.length;
+  const spins = (5 + Math.floor(Math.random()*3)) * Math.PI*2;
+  const curPos = spinAngle % (Math.PI*2);
+  const wantPos = ((n - targetIdx) * arc) % (Math.PI*2);
+  let delta = wantPos - curPos;
+  if (delta <= 0) delta += Math.PI*2;
+  const target = spinAngle + spins + delta;
+  const dur = 4200;
+  const t0 = performance.now();
+  const a0 = spinAngle;
+  let lastIdx = -1;
+
+  function frame(now) {
+    const p = Math.min((now - t0) / dur, 1);
+    const ease = 1 - Math.pow(1-p, 3);
+    spinAngle = a0 + (target - a0)*ease;
+    drawWheel(cvSpin, spinAngle);
+
+    const ci = getTopIdx(spinAngle);
+    if (ci !== lastIdx) { tick(); lastIdx = ci; }
+
+    if (p < 1) { requestAnimationFrame(frame); }
+    else { spinAngle = target; setTimeout(afterSpin, 350); }
+  }
+  requestAnimationFrame(frame);
+}
+
+function afterSpin() {
+  win();
+  confetti();
+  go('s-form');
+}
+
+// ══ MOSTRAR PRÊMIO ══
+function showPrize() {
+  document.getElementById('p-icon').textContent = seg.emoji;
+  document.getElementById('p-name').textContent = seg.prize;
+  document.getElementById('p-desc').textContent = seg.desc;
+  document.getElementById('prize-card').style.borderColor = seg.color + '88';
+
+  const pt = document.getElementById('p-pain');
+  if (lead && lead.pain) {
+    pt.textContent = '🎯 Foco: ' + lead.pain;
+    pt.style.display = 'inline-block';
+  } else {
+    pt.style.display = 'none';
+  }
+
+  confetti();
+  win();
+  go('s-result');
+  if (lead) saveLead();
+}
+
+// ══ BOTÕES ══
+document.getElementById('btn-spin').addEventListener('click', () => {
+  resume(); click();
+  seg = SEGS[Math.floor(Math.random() * SEGS.length)];
+  lead = null;
+  go('s-spin');
+  setTimeout(() => doSpin(SEGS.indexOf(seg)), 300);
+});
+
+document.getElementById('btn-reveal').addEventListener('click', () => {
+  const nome = document.getElementById('inp-nome').value.trim();
+  const wpp  = document.getElementById('inp-wpp').value.trim();
+  const ni   = document.getElementById('inp-nome');
+  const wi   = document.getElementById('inp-wpp');
+  ni.classList.toggle('err', !nome);
+  wi.classList.toggle('err', !wpp);
+  if (!nome || !wpp) return;
+  click();
+  lead = { nome, whatsapp: wpp, pain: null };
+  go('s-question');
+});
+
+document.getElementById('btn-skip').addEventListener('click', () => {
+  click(); lead = null;
+  showPrize();
+});
+
+document.querySelectorAll('.opt').forEach(btn => {
+  btn.addEventListener('click', () => {
+    click();
+    if (lead) lead.pain = btn.dataset.pain;
+    showPrize();
+  });
+});
+
+document.getElementById('btn-skip-q').addEventListener('click', () => {
+  click(); showPrize();
+});
+
+document.getElementById('btn-restart').addEventListener('click', () => {
+  click(); seg = null; lead = null;
+  document.getElementById('inp-nome').value = '';
+  document.getElementById('inp-wpp').value = '';
+  document.getElementById('inp-nome').classList.remove('err');
+  document.getElementById('inp-wpp').classList.remove('err');
+  go('s-start');
+});
+
+// ══ LEADS ══
+const LS_KEY = 'lt_leads';
+const getLeads = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); } catch { return []; } };
+const setLeads = arr => localStorage.setItem(LS_KEY, JSON.stringify(arr));
+
+function saveLead() {
+  if (!lead || (!lead.nome && !lead.whatsapp)) return;
+  const arr = getLeads();
+  arr.push({
+    id: Date.now(),
+    nome: lead.nome,
+    whatsapp: lead.whatsapp,
+    pain: lead.pain || '',
+    prize: seg.prize,
+    hora: new Date().toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})
+  });
+  setLeads(arr);
+}
+
+// ══ ADMIN — logo 8x ══
+let tapN = 0, tapT = null;
+document.getElementById('logo-tap').addEventListener('click', () => {
+  tapN++; clearTimeout(tapT);
+  tapT = setTimeout(() => tapN = 0, 2500);
+  if (tapN >= 8) { tapN = 0; openAdmin(); }
+});
+
+function openAdmin() {
+  const arr = getLeads();
+  document.getElementById('adm-ct').textContent = `${arr.length} lead${arr.length!==1?'s':''} coletado${arr.length!==1?'s':''}`;
+  const body = document.getElementById('adm-body');
+  if (!arr.length) {
+    body.innerHTML = '<div class="adm-empty">Nenhum lead ainda.</div>';
+  } else {
+    body.innerHTML = `<table>
+      <thead><tr><th>Nome</th><th>WhatsApp</th><th>Dor</th><th>Prêmio</th><th>Hora</th></tr></thead>
+      <tbody>${arr.slice().reverse().map(l=>`
+        <tr>
+          <td>${l.nome||'—'}</td>
+          <td>${l.whatsapp||'—'}</td>
+          <td>${l.pain?`<span class="bg bg-b">${l.pain}</span>`:'—'}</td>
+          <td><span class="bg bg-g">${l.prize}</span></td>
+          <td>${l.hora}</td>
+        </tr>`).join('')}
+      </tbody></table>`;
+  }
+  go('s-admin');
+}
+
+document.getElementById('btn-bk').addEventListener('click', () => go('s-start'));
+
+document.getElementById('btn-clr').addEventListener('click', () => {
+  if (confirm('Apagar todos os leads?')) { setLeads([]); openAdmin(); }
+});
+
+document.getElementById('btn-exp').addEventListener('click', () => {
+  const arr = getLeads(); if (!arr.length) return;
+  const csv = 'Nome,WhatsApp,Dor,Prêmio,Hora\n' + arr.map(l=>
+    [l.nome,l.whatsapp,l.pain,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')
+  ).join('\n');
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download = `limatech_leads_${new Date().toISOString().slice(0,10)}.csv`;
+  a.click();
+});
+
+document.addEventListener('touchend', e => { if(!e.touches.length) e.preventDefault(); }, {passive:false});
+</script>
+</body>
+</html>

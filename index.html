@@ -405,7 +405,7 @@
       <div class="slot-preview-desc">Alinhe 3 símbolos iguais e ganhe um brinde!</div>
       <div class="slot-preview-desc" style="margin-top:4px">Cada participante tem <strong style="color:var(--amarelo)">10 tentativas</strong></div>
     </div>
-    <div class="slot-tries-badge">Tentativas restantes: <span id="tries-badge">10</span> / 10</div>
+    <div class="slot-tries-badge">Tentativas restantes: <span id="tries-badge">5</span> / 5</div>
   </div>
 
   <!-- PAINEL QUIZ -->
@@ -445,7 +445,7 @@
   </div>
   <div class="slot-machine">
     <div class="slot-title-bar">🎰 Caça-Níquel LimaTech</div>
-    <div class="slot-tries-bar">Tentativas: <span id="slot-tries-num">10</span> / 10</div>
+    <div class="slot-tries-bar">Tentativas: <span id="slot-tries-num">5</span> / 5</div>
     <div class="slot-reels">
       <canvas class="reel-cv" id="reel-0" width="90" height="274"></canvas>
       <canvas class="reel-cv" id="reel-1" width="90" height="274"></canvas>
@@ -586,7 +586,7 @@ let seg      = null;
 let lead     = null;
 let gameMode = 'wheel'; // 'wheel' | 'slot' | 'quiz'
 let idleAngle = 0, spinAngle = 0;
-let slotTries    = 10;
+let slotTries    = 5;
 let slotSpinning = false;
 let quizAnswered = false;
 
@@ -803,6 +803,7 @@ function calcReelTarget(curOffset, symIdx) {
 function syncTriesBadge() {
   document.getElementById('tries-badge').textContent = slotTries;
   document.getElementById('slot-tries-num').textContent = slotTries;
+  document.getElementById('slot-tries-bar') && (document.getElementById('slot-tries-bar').querySelector('span').textContent = slotTries);
 }
 
 function doSlotSpin() {
@@ -888,7 +889,7 @@ function onSlotEnd(isWin) {
     winLine.classList.add('flash');
     statusEl.textContent = '🎉 Você acertou! Parabéns!';
     sndWin(); confetti();
-    slotTries = 10; syncTriesBadge();
+    slotTries = 5; syncTriesBadge();
     setTimeout(() => go('s-form'), 1600);
   } else {
     slotTries--;
@@ -907,7 +908,7 @@ function onSlotEnd(isWin) {
       afterEl.appendChild(btn);
     } else {
       statusEl.textContent = 'Fim das tentativas! Você ainda ganha um brinde! 🎁';
-      slotTries = 10; syncTriesBadge();
+      slotTries = 5; syncTriesBadge();
       sndWin();
       setTimeout(() => { confetti(); go('s-form'); }, 1400);
     }
@@ -917,9 +918,25 @@ function onSlotEnd(isWin) {
 // ════════════════════════════════
 // QUIZ
 // ════════════════════════════════
+// Mantém índices de partidas já usadas para não repetir antes de acertar
+let quizUsed = [];
+
 function startQuiz() {
+  quizUsed = [];
+  loadNextQuizQuestion();
+  go('s-quiz');
+}
+
+function loadNextQuizQuestion() {
   quizAnswered = false;
-  const p = PARTIDAS[Math.floor(Math.random() * PARTIDAS.length)];
+
+  // Escolhe partida ainda não usada nesta rodada
+  const available = PARTIDAS.map((_,i)=>i).filter(i=>!quizUsed.includes(i));
+  const pool = available.length > 0 ? available : PARTIDAS.map((_,i)=>i);
+  const idx = pool[Math.floor(Math.random() * pool.length)];
+  quizUsed.push(idx);
+  const p = PARTIDAS[idx];
+
   const useScore = Math.random() > .4;
   document.getElementById('q-flag-a').textContent = p.fa;
   document.getElementById('q-name-a').textContent = p.ta;
@@ -957,7 +974,6 @@ function startQuiz() {
       optsEl.appendChild(b);
     });
   }
-  go('s-quiz');
 }
 
 function makeWrongScores(sa, sb) {
@@ -974,6 +990,7 @@ function shuffle(arr) {
   for (let i=arr.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
   return arr;
 }
+
 function handleQuizAnswer(isCorrect, correctLabel, optsEl) {
   if (quizAnswered) return;
   quizAnswered = true;
@@ -984,14 +1001,21 @@ function handleQuizAnswer(isCorrect, correctLabel, optsEl) {
   });
   const fb = document.getElementById('q-feedback');
   fb.style.display = 'block';
-  document.getElementById('btn-quiz-next').style.display = 'block';
+
   if (isCorrect) {
     confetti(); sndWin();
     fb.className = 'quiz-feedback ok';
     fb.textContent = '🎯 Acertou! Você ganhou um brinde!';
+    document.getElementById('btn-quiz-next').style.display = 'block';
   } else {
     fb.className = 'quiz-feedback err';
-    fb.textContent = `O resultado correto era "${correctLabel}", mas você ainda ganhou um brinde! 🎁`;
+    fb.textContent = `❌ Errou! O resultado era "${correctLabel}". Próximo jogo em 2 segundos...`;
+    // Avança automaticamente para a próxima pergunta após 2s
+    setTimeout(() => {
+      if (cur === 's-quiz') {
+        loadNextQuizQuestion();
+      }
+    }, 2000);
   }
 }
 document.getElementById('btn-quiz-next').addEventListener('click', () => { sndClick(); go('s-form'); });

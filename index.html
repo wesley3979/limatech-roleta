@@ -105,13 +105,64 @@
     50%      { box-shadow: 0 8px 50px rgba(245,158,11,.85); }
   }
 
-  /* Botão admin discreto no início */
-  .btn-admin-tiny {
+  /* Botões discretos na base da tela inicial */
+  .start-bottom {
     position: absolute; bottom: 18px;
+    display: flex; gap: 12px; align-items: center;
+  }
+  .btn-admin-tiny {
     background: none; border: none;
     color: rgba(255,255,255,.18); font-size: 12px;
-    cursor: pointer; padding: 8px 16px; letter-spacing: .3px;
+    cursor: pointer; padding: 8px 14px; letter-spacing: .3px;
+    border-radius: 8px; transition: color .2s;
   }
+  .btn-admin-tiny.slot-on {
+    color: var(--amarelo); opacity: .9;
+  }
+
+  /* ── SLOT MACHINE ── */
+  #s-slot { gap: 18px; }
+
+  .slot-machine {
+    background: linear-gradient(160deg, #12122a 0%, #0d1520 100%);
+    border: 3px solid rgba(245,158,11,.5);
+    border-radius: 24px; padding: 18px 22px 22px;
+    box-shadow: 0 0 50px rgba(245,158,11,.2), inset 0 2px 0 rgba(255,255,255,.06);
+    position: relative;
+  }
+  .slot-title-bar {
+    text-align: center; margin-bottom: 14px;
+    font-size: 12px; font-weight: 800; letter-spacing: 3px;
+    text-transform: uppercase; color: var(--amarelo);
+  }
+  .slot-reels {
+    display: flex; gap: 10px; justify-content: center; position: relative;
+  }
+  .reel-cv {
+    border-radius: 10px; display: block;
+    border: 2px solid rgba(255,255,255,.1);
+    box-shadow: inset 0 0 16px rgba(0,0,0,.6);
+  }
+  .slot-win-line {
+    position: absolute; top: 50%; left: -8px; right: -8px;
+    transform: translateY(-50%);
+    height: 92px; pointer-events: none;
+    border: 2px solid rgba(245,158,11,.65);
+    border-radius: 6px;
+    box-shadow: 0 0 18px rgba(245,158,11,.35), inset 0 0 18px rgba(245,158,11,.08);
+  }
+  @keyframes reel-bounce {
+    0%,100% { transform: scaleY(1); }
+    40%      { transform: scaleY(1.05); }
+    70%      { transform: scaleY(.97); }
+  }
+  .reel-bounce { animation: reel-bounce .35s ease; }
+
+  @keyframes slot-win-flash {
+    0%,100% { box-shadow: 0 0 18px rgba(245,158,11,.35); border-color: rgba(245,158,11,.65); }
+    50%      { box-shadow: 0 0 50px rgba(245,158,11,.9);  border-color: rgba(245,158,11,1); }
+  }
+  .slot-win-line.flash { animation: slot-win-flash .4s ease 3; }
 
   /* ── TELA 2 — GIRANDO ── */
   #s-spin { gap: 20px; }
@@ -330,8 +381,10 @@
 
   <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
 
-  <!-- Botão discreto de admin -->
-  <button class="btn-admin-tiny" id="btn-admin-tiny">leads</button>
+  <div class="start-bottom">
+    <button class="btn-admin-tiny" id="btn-admin-tiny">leads</button>
+    <button class="btn-admin-tiny" id="btn-slot-toggle">🎰 caça-níquel</button>
+  </div>
 </div>
 
 <!-- ══ TELA 2: GIRANDO ══ -->
@@ -342,6 +395,24 @@
     <div class="wheel-center">🎁</div>
   </div>
   <div class="spin-label">A sorte está sendo lançada...</div>
+</div>
+
+<!-- ══ TELA SLOT ══ -->
+<div class="screen" id="s-slot">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+  </div>
+  <div class="slot-machine">
+    <div class="slot-title-bar">🎰 Caça-Níquel</div>
+    <div class="slot-reels">
+      <canvas class="reel-cv" id="reel-0" width="90" height="274"></canvas>
+      <canvas class="reel-cv" id="reel-1" width="90" height="274"></canvas>
+      <canvas class="reel-cv" id="reel-2" width="90" height="274"></canvas>
+      <div class="slot-win-line" id="slot-win-line"></div>
+    </div>
+  </div>
+  <div class="spin-label">Girando...</div>
 </div>
 
 <!-- ══ TELA 3: FORMULÁRIO ══ -->
@@ -419,6 +490,7 @@ const SEGS = [
 // ══ ESTADO ══
 let cur = 's-start', seg = null, lead = null;
 let idleAngle = 0, spinAngle = 0;
+let slotMode = false;
 
 // ══ AUDIO (criado na primeira interação — exigência do Android) ══
 let AC = null;
@@ -574,8 +646,19 @@ document.getElementById('btn-spin').addEventListener('click', () => {
   resume(); click();
   seg = SEGS[Math.floor(Math.random() * SEGS.length)];
   lead = null;
-  go('s-spin');
-  setTimeout(() => doSpin(SEGS.indexOf(seg)), 300);
+  if (slotMode) {
+    go('s-slot');
+    setTimeout(doSlotSpin, 300);
+  } else {
+    go('s-spin');
+    setTimeout(() => doSpin(SEGS.indexOf(seg)), 300);
+  }
+});
+
+document.getElementById('btn-slot-toggle').addEventListener('click', () => {
+  slotMode = !slotMode;
+  document.getElementById('btn-slot-toggle').classList.toggle('slot-on', slotMode);
+  click();
 });
 
 document.getElementById('btn-reveal').addEventListener('click', () => {
@@ -601,6 +684,159 @@ document.getElementById('btn-restart').addEventListener('click', () => {
   document.getElementById('inp-wpp').classList.remove('err');
   go('s-start');
 });
+
+// ══ SLOT MACHINE ══
+const CELL_H = 90;   // px per symbol cell
+const REEL_H = 274;  // canvas height (≈ 3 cells visible, center is the win line)
+const REEL_W = 90;
+const SLOT_COLORS = ['#1e56c8','#8b5cf6','#06b6d4','#f59e0b','#22c55e','#ef4444'];
+
+function drawReel(canvas, offset) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, REEL_W, REEL_H);
+
+  // How many cells fit + 1 partial
+  const firstCell = Math.floor(offset / CELL_H);
+  const cellOffset = offset % CELL_H; // pixels into current top cell
+
+  for (let i = 0; i <= 3; i++) {
+    const ci = (firstCell + i) % SLOT_COLORS.length;
+    const y = i * CELL_H - cellOffset;
+
+    // Cell background
+    ctx.fillStyle = SLOT_COLORS[ci];
+    ctx.fillRect(0, y, REEL_W, CELL_H);
+
+    // Subtle inner border
+    ctx.strokeStyle = 'rgba(255,255,255,.12)';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0, y, REEL_W, CELL_H);
+
+    // 🎁 emoji
+    ctx.font = '40px serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillStyle = '#fff';
+    ctx.shadowColor = 'rgba(0,0,0,.5)';
+    ctx.shadowBlur = 6;
+    ctx.fillText('🎁', REEL_W / 2, y + CELL_H / 2);
+    ctx.shadowBlur = 0;
+  }
+
+  // Top fade
+  const gt = ctx.createLinearGradient(0, 0, 0, CELL_H * .9);
+  gt.addColorStop(0, 'rgba(10,10,30,.92)');
+  gt.addColorStop(1, 'transparent');
+  ctx.fillStyle = gt; ctx.fillRect(0, 0, REEL_W, CELL_H * .9);
+
+  // Bottom fade
+  const gb = ctx.createLinearGradient(0, REEL_H - CELL_H * .9, 0, REEL_H);
+  gb.addColorStop(0, 'transparent');
+  gb.addColorStop(1, 'rgba(10,10,30,.92)');
+  ctx.fillStyle = gb; ctx.fillRect(0, REEL_H - CELL_H * .9, REEL_W, CELL_H * .9);
+}
+
+// offset such that the target color lands at center of the window
+// center cell top y = CELL_H (second visible cell)
+// => cellIndex in center = floor((offset + CELL_H) / CELL_H) = floor(offset/CELL_H) + 1
+// => we need (floor(offset/CELL_H) + 1) % n == targetColorIdx
+// => floor(offset/CELL_H) % n == (targetColorIdx - 1 + n) % n
+// The smallest integer k >= minK satisfying k % n == needed:
+function targetOffset(currentOffset, colorIdx) {
+  const n = SLOT_COLORS.length;
+  const needed = (colorIdx - 1 + n) % n;
+  const minK = Math.ceil(currentOffset / CELL_H) + 12; // at least 12 extra cells (~1 full cycle gap)
+  const extra = (needed - minK % n + n) % n;
+  return (minK + extra) * CELL_H;
+}
+
+function doSlotSpin() {
+  const cvs = [
+    document.getElementById('reel-0'),
+    document.getElementById('reel-1'),
+    document.getElementById('reel-2'),
+  ];
+  const winLine = document.getElementById('slot-win-line');
+  winLine.classList.remove('flash');
+
+  const colorIdx = SEGS.indexOf(seg) % SLOT_COLORS.length;
+
+  // Each reel state
+  const reels = cvs.map((cv, i) => ({
+    cv,
+    offset: 0,
+    speed: 0,
+    finalOffset: 0,
+    phase: 'accel',   // accel | spin | decel | done
+    stopFrame: 80 + i * 40, // reel 0 stops earliest
+    frame: 0,
+    done: false,
+  }));
+
+  // Pre-compute target offsets after spin (calculated once speed is known)
+  let rafId2;
+
+  function frame() {
+    let allDone = true;
+
+    reels.forEach(r => {
+      r.frame++;
+
+      if (r.phase === 'accel') {
+        r.speed = Math.min(r.speed + 1.5, 28);
+        if (r.speed >= 28) r.phase = 'spin';
+      }
+
+      if (r.phase === 'spin') {
+        if (r.frame >= r.stopFrame) {
+          // compute target now (based on current offset)
+          r.finalOffset = targetOffset(r.offset, colorIdx);
+          r.phase = 'decel';
+        }
+      }
+
+      if (r.phase === 'decel') {
+        const remaining = r.finalOffset - r.offset;
+        if (remaining <= 0.5) {
+          r.offset = r.finalOffset;
+          r.phase = 'done';
+          r.done = true;
+          // bounce effect on canvas
+          r.cv.classList.remove('reel-bounce');
+          void r.cv.offsetWidth; // reflow to restart animation
+          r.cv.classList.add('reel-bounce');
+          // tick sound
+          tone(600 + r.cv.id.slice(-1) * 80, 'sine', .25, .18);
+        } else {
+          // ease-out: speed proportional to remaining distance, capped
+          r.speed = Math.min(Math.max(remaining * 0.18, 1), 28);
+          r.offset += r.speed;
+        }
+      }
+
+      if (r.phase === 'spin') {
+        r.offset += r.speed;
+      } else if (r.phase === 'accel') {
+        r.offset += r.speed;
+      }
+
+      drawReel(r.cv, r.offset);
+      if (!r.done) allDone = false;
+    });
+
+    if (!allDone) {
+      rafId2 = requestAnimationFrame(frame);
+    } else {
+      // All stopped — flash win line then proceed
+      winLine.classList.add('flash');
+      setTimeout(() => { win(); confetti(); go('s-form'); }, 1400);
+    }
+  }
+
+  // Init with offset 0
+  reels.forEach(r => drawReel(r.cv, 0));
+  rafId2 = requestAnimationFrame(frame);
+}
 
 // ══ LEADS — localStorage ══
 const LS_KEY = 'lt_leads';

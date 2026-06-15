@@ -6,27 +6,18 @@
 <title>LimaTech — Gire e Ganhe</title>
 <style>
   :root {
-    --azul: #0a2463;
-    --azul-c: #1e56c8;
-    --verde: #22c55e;
-    --amarelo: #f59e0b;
-    --laranja: #f97316;
-    --ciano: #06b6d4;
-    --vermelho: #ef4444;
+    --azul: #0a2463; --azul-c: #1e56c8; --verde: #22c55e;
+    --amarelo: #f59e0b; --laranja: #f97316; --ciano: #06b6d4; --vermelho: #ef4444;
   }
-
   * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
-
   html, body {
     width: 100%; height: 100%;
     background: linear-gradient(135deg, #060c1f 0%, #0a1a3e 50%, #060c1f 100%);
     font-family: 'Segoe UI', system-ui, sans-serif;
     overflow: hidden; user-select: none;
   }
-
   #particles { position: fixed; inset: 0; pointer-events: none; z-index: 0; }
 
-  /* ── TELAS ── */
   .screen {
     position: absolute; inset: 0;
     display: flex; flex-direction: column;
@@ -37,67 +28,111 @@
   }
   .screen.active { opacity: 1; pointer-events: all; }
 
-  /* ── LOGO ── */
-  .logo {
-    display: flex; align-items: center; gap: 10px;
-    cursor: pointer; margin-bottom: 4px;
-  }
+  .logo { display: flex; align-items: center; gap: 10px; cursor: pointer; margin-bottom: 4px; }
   .logo-icon {
     width: 46px; height: 46px;
     background: linear-gradient(135deg, var(--azul-c), var(--ciano));
-    border-radius: 12px;
-    display: flex; align-items: center; justify-content: center;
+    border-radius: 12px; display: flex; align-items: center; justify-content: center;
     font-size: 22px; box-shadow: 0 0 20px rgba(30,86,200,.45);
   }
   .logo-txt strong { color: #fff; font-size: 20px; display: block; }
   .logo-txt small { color: rgba(255,255,255,.4); font-size: 11px; letter-spacing: 1px; text-transform: uppercase; }
 
-  /* ── ROLETA ── */
-  .wheel-wrap {
-    position: relative;
-    width: min(360px, 80vw); height: min(360px, 80vw);
-    filter: drop-shadow(0 0 28px rgba(30,86,200,.55));
-    flex-shrink: 0;
-  }
-  .wheel-wrap canvas { border-radius: 50%; display: block; }
-  .wheel-pointer {
-    position: absolute; top: -16px; left: 50%;
-    transform: translateX(-50%);
-    width: 0; height: 0;
-    border-left: 16px solid transparent;
-    border-right: 16px solid transparent;
-    border-top: 32px solid var(--amarelo);
-    filter: drop-shadow(0 3px 6px rgba(0,0,0,.6));
-    z-index: 2;
-  }
-  .wheel-center {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%,-50%);
-    width: 58px; height: 58px;
-    background: radial-gradient(circle, #fff 20%, #e2e8f0 100%);
-    border-radius: 50%;
-    box-shadow: 0 0 0 5px var(--azul), 0 0 18px rgba(0,0,0,.5);
-    z-index: 3;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 26px;
-  }
-
-  /* ── TELA 1 — INÍCIO ── */
+  /* ── TELA INÍCIO ── */
   #s-start { gap: 18px; }
+  .start-bottom { position: absolute; bottom: 18px; display: flex; gap: 10px; align-items: center; }
+  .btn-tiny {
+    background: none; border: none;
+    color: rgba(255,255,255,.2); font-size: 12px;
+    cursor: pointer; padding: 8px 12px; letter-spacing: .3px;
+    border-radius: 8px; transition: color .2s, background .2s;
+  }
+  .btn-tiny.on { color: var(--amarelo); background: rgba(245,158,11,.1); }
 
+  /* Painéis de modo dentro da tela início */
+  .mode-panel { display: none; flex-direction: column; align-items: center; gap: 18px; width: 100%; }
+  .mode-panel.active { display: flex; }
+
+  /* Painel roleta */
   .headline { text-align: center; }
   .headline h1 { color: #fff; font-size: 34px; font-weight: 800; line-height: 1.1; text-shadow: 0 0 40px rgba(30,86,200,.8); }
   .headline h1 em { color: var(--amarelo); font-style: normal; }
   .headline p { color: rgba(255,255,255,.5); font-size: 15px; margin-top: 6px; }
+  .wheel-wrap {
+    position: relative;
+    width: min(320px, 78vw); height: min(320px, 78vw);
+    filter: drop-shadow(0 0 28px rgba(30,86,200,.55)); flex-shrink: 0;
+  }
+  .wheel-wrap canvas { border-radius: 50%; display: block; width: 100%; height: 100%; }
+  .wheel-pointer {
+    position: absolute; top: -16px; left: 50%; transform: translateX(-50%);
+    width: 0; height: 0;
+    border-left: 16px solid transparent; border-right: 16px solid transparent;
+    border-top: 32px solid var(--amarelo);
+    filter: drop-shadow(0 3px 6px rgba(0,0,0,.6)); z-index: 2;
+  }
+  .wheel-center {
+    position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+    width: 58px; height: 58px;
+    background: radial-gradient(circle, #fff 20%, #e2e8f0 100%);
+    border-radius: 50%; box-shadow: 0 0 0 5px var(--azul), 0 0 18px rgba(0,0,0,.5);
+    z-index: 3; display: flex; align-items: center; justify-content: center; font-size: 26px;
+  }
 
+  /* Painel caça-níquel preview */
+  .slot-preview {
+    background: linear-gradient(160deg, #12122a 0%, #0d1520 100%);
+    border: 3px solid rgba(245,158,11,.5); border-radius: 24px;
+    padding: 20px 24px 24px; text-align: center;
+    box-shadow: 0 0 50px rgba(245,158,11,.2);
+  }
+  .slot-preview-title {
+    font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase;
+    color: var(--amarelo); margin-bottom: 16px;
+  }
+  .slot-preview-reels {
+    display: flex; gap: 8px; justify-content: center; margin-bottom: 16px;
+  }
+  .slot-prev-reel {
+    width: 72px; height: 72px; background: rgba(255,255,255,.07);
+    border: 2px solid rgba(255,255,255,.15); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 36px;
+  }
+  .slot-preview-desc {
+    color: rgba(255,255,255,.45); font-size: 13px; line-height: 1.5; margin-bottom: 4px;
+  }
+  .slot-tries-badge {
+    display: inline-block;
+    background: rgba(245,158,11,.15); border: 1px solid rgba(245,158,11,.3);
+    border-radius: 20px; padding: 4px 14px;
+    color: var(--amarelo); font-size: 12px; font-weight: 700; letter-spacing: .5px;
+  }
+
+  /* Painel quiz preview */
+  .quiz-preview {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.12);
+    border-radius: 22px; padding: 24px; text-align: center; max-width: 400px; width: 100%;
+  }
+  .quiz-preview-icon { font-size: 56px; margin-bottom: 10px; }
+  .quiz-preview-title { color: #fff; font-size: 20px; font-weight: 800; margin-bottom: 6px; }
+  .quiz-preview-sub { color: rgba(255,255,255,.45); font-size: 14px; line-height: 1.5; }
+  .quiz-preview-badge {
+    margin-top: 14px;
+    display: inline-block;
+    background: rgba(34,197,94,.15); border: 1px solid rgba(34,197,94,.3);
+    border-radius: 20px; padding: 4px 14px;
+    color: var(--verde); font-size: 12px; font-weight: 700;
+  }
+
+  /* BOTÃO PRINCIPAL */
   .btn-spin {
     background: linear-gradient(135deg, var(--amarelo), var(--laranja));
     color: #fff; border: none; border-radius: 56px;
     padding: 18px 56px; font-size: 22px; font-weight: 800;
     cursor: pointer; letter-spacing: .5px;
     box-shadow: 0 8px 28px rgba(245,158,11,.5);
-    animation: pulse-btn 2s infinite;
-    transition: transform .12s;
+    animation: pulse-btn 2s infinite; transition: transform .12s;
   }
   .btn-spin:active { transform: scale(.95); }
   @keyframes pulse-btn {
@@ -105,39 +140,30 @@
     50%      { box-shadow: 0 8px 50px rgba(245,158,11,.85); }
   }
 
-  /* Botões discretos na base da tela inicial */
-  .start-bottom {
-    position: absolute; bottom: 18px;
-    display: flex; gap: 12px; align-items: center;
-  }
-  .btn-admin-tiny {
-    background: none; border: none;
-    color: rgba(255,255,255,.18); font-size: 12px;
-    cursor: pointer; padding: 8px 14px; letter-spacing: .3px;
-    border-radius: 8px; transition: color .2s;
-  }
-  .btn-admin-tiny.slot-on {
-    color: var(--amarelo); opacity: .9;
-  }
+  /* ── SPIN ROLETA ── */
+  #s-spin { gap: 20px; }
+  .spin-label { color: rgba(255,255,255,.5); font-size: 16px; animation: blink 1s infinite; }
+  @keyframes blink { 50% { opacity: .15; } }
 
-  /* ── SLOT MACHINE ── */
-  #s-slot { gap: 18px; }
-
+  /* ── CAÇA-NÍQUEL ── */
+  #s-slot { gap: 16px; }
   .slot-machine {
     background: linear-gradient(160deg, #12122a 0%, #0d1520 100%);
-    border: 3px solid rgba(245,158,11,.5);
-    border-radius: 24px; padding: 18px 22px 22px;
+    border: 3px solid rgba(245,158,11,.5); border-radius: 24px;
+    padding: 18px 22px 22px;
     box-shadow: 0 0 50px rgba(245,158,11,.2), inset 0 2px 0 rgba(255,255,255,.06);
-    position: relative;
   }
   .slot-title-bar {
-    text-align: center; margin-bottom: 14px;
+    text-align: center; margin-bottom: 10px;
     font-size: 12px; font-weight: 800; letter-spacing: 3px;
     text-transform: uppercase; color: var(--amarelo);
   }
-  .slot-reels {
-    display: flex; gap: 10px; justify-content: center; position: relative;
+  .slot-tries-bar {
+    text-align: center; color: rgba(255,255,255,.4);
+    font-size: 13px; font-weight: 600; margin-bottom: 12px;
   }
+  .slot-tries-bar span { color: var(--amarelo); }
+  .slot-reels { display: flex; gap: 10px; justify-content: center; position: relative; }
   .reel-cv {
     border-radius: 10px; display: block;
     border: 2px solid rgba(255,255,255,.1);
@@ -145,41 +171,81 @@
   }
   .slot-win-line {
     position: absolute; top: 50%; left: -8px; right: -8px;
-    transform: translateY(-50%);
-    height: 92px; pointer-events: none;
-    border: 2px solid rgba(245,158,11,.65);
-    border-radius: 6px;
+    transform: translateY(-50%); height: 92px; pointer-events: none;
+    border: 2px solid rgba(245,158,11,.65); border-radius: 6px;
     box-shadow: 0 0 18px rgba(245,158,11,.35), inset 0 0 18px rgba(245,158,11,.08);
   }
-  @keyframes reel-bounce {
-    0%,100% { transform: scaleY(1); }
-    40%      { transform: scaleY(1.05); }
-    70%      { transform: scaleY(.97); }
-  }
-  .reel-bounce { animation: reel-bounce .35s ease; }
-
   @keyframes slot-win-flash {
     0%,100% { box-shadow: 0 0 18px rgba(245,158,11,.35); border-color: rgba(245,158,11,.65); }
-    50%      { box-shadow: 0 0 50px rgba(245,158,11,.9);  border-color: rgba(245,158,11,1); }
+    50%      { box-shadow: 0 0 60px rgba(245,158,11,.95); border-color: var(--amarelo); }
   }
-  .slot-win-line.flash { animation: slot-win-flash .4s ease 3; }
+  .slot-win-line.flash { animation: slot-win-flash .4s ease 4; }
+  @keyframes reel-stop-bounce {
+    0%,100% { transform: scaleY(1); } 35% { transform: scaleY(1.06); } 70% { transform: scaleY(.97); }
+  }
+  .reel-bounce { animation: reel-stop-bounce .35s ease; transform-origin: center; }
+  .slot-status { color: rgba(255,255,255,.5); font-size: 15px; font-weight: 600; text-align: center; min-height: 22px; }
+  .btn-slot-again {
+    background: linear-gradient(135deg, var(--azul-c), var(--ciano));
+    color: #fff; border: none; border-radius: 12px;
+    padding: 14px 34px; font-size: 16px; font-weight: 700;
+    cursor: pointer; transition: transform .12s;
+  }
+  .btn-slot-again:active { transform: scale(.96); }
 
-  /* ── TELA 2 — GIRANDO ── */
-  #s-spin { gap: 20px; }
-  .spin-label { color: rgba(255,255,255,.5); font-size: 16px; animation: blink 1s infinite; }
-  @keyframes blink { 50% { opacity: .15; } }
+  /* ── QUIZ TELA ── */
+  #s-quiz { gap: 16px; }
+  .quiz-badge-sm {
+    background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.3);
+    border-radius: 20px; padding: 5px 16px;
+    color: var(--amarelo); font-size: 12px; font-weight: 700; letter-spacing: 1.5px;
+    text-transform: uppercase;
+  }
+  .quiz-card {
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
+    border-radius: 22px; padding: 22px 20px;
+    width: 100%; max-width: 500px; backdrop-filter: blur(16px);
+  }
+  .quiz-match {
+    display: flex; align-items: center; justify-content: center; gap: 12px;
+    margin-bottom: 18px;
+  }
+  .quiz-team { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .quiz-flag { font-size: 42px; line-height: 1; }
+  .quiz-tname { color: #fff; font-size: 12px; font-weight: 600; text-align: center; line-height: 1.2; }
+  .quiz-vs { color: rgba(255,255,255,.35); font-size: 22px; font-weight: 700; }
+  .quiz-date { color: rgba(255,255,255,.35); font-size: 11px; text-align: center; margin-top: -12px; margin-bottom: 14px; }
+  .quiz-question { color: #fff; font-size: 16px; font-weight: 700; text-align: center; margin-bottom: 16px; line-height: 1.4; }
+  .quiz-opts { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  .quiz-opt {
+    background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.12);
+    border-radius: 12px; padding: 14px 10px;
+    color: #fff; font-size: 14px; font-weight: 700;
+    cursor: pointer; transition: all .18s; text-align: center;
+  }
+  .quiz-opt:active { transform: scale(.96); }
+  .quiz-opt.correct { background: rgba(34,197,94,.25); border-color: var(--verde); color: var(--verde); }
+  .quiz-opt.wrong   { background: rgba(239,68,68,.2);  border-color: var(--vermelho); color: var(--vermelho); }
+  .quiz-feedback {
+    margin-top: 14px; padding: 12px 14px; border-radius: 12px;
+    text-align: center; font-size: 13px; font-weight: 600; line-height: 1.4; display: none;
+  }
+  .quiz-feedback.ok  { background: rgba(34,197,94,.15); color: var(--verde); border: 1px solid rgba(34,197,94,.3); }
+  .quiz-feedback.err { background: rgba(239,68,68,.1);  color: rgba(255,255,255,.8); border: 1px solid rgba(239,68,68,.25); }
+  .btn-quiz-next {
+    width: 100%; padding: 14px; margin-top: 10px;
+    background: linear-gradient(135deg, var(--azul-c), var(--ciano));
+    color: #fff; border: none; border-radius: 12px;
+    font-size: 16px; font-weight: 700; cursor: pointer; display: none;
+  }
 
-  /* ── TELA 3 — FORMULÁRIO ── */
+  /* ── FORMULÁRIO ── */
   #s-form { gap: 0; justify-content: center; }
-
   .mystery-prize {
-    background: rgba(255,255,255,.05);
-    border: 2px solid rgba(245,158,11,.4);
-    border-radius: 20px;
-    padding: 18px 24px;
+    background: rgba(255,255,255,.05); border: 2px solid rgba(245,158,11,.4);
+    border-radius: 20px; padding: 18px 24px;
     display: flex; align-items: center; gap: 16px;
-    margin-bottom: 16px;
-    width: 100%; max-width: 440px;
+    margin-bottom: 16px; width: 100%; max-width: 440px;
     animation: glow-prize 2s infinite;
   }
   @keyframes glow-prize {
@@ -190,23 +256,18 @@
   @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
   .mystery-text strong { color: var(--amarelo); font-size: 16px; display: block; margin-bottom: 3px; }
   .mystery-text span   { color: rgba(255,255,255,.5); font-size: 13px; }
-
   .form-card {
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.1);
+    background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1);
     border-radius: 20px; padding: 26px 26px 22px;
-    width: 100%; max-width: 440px;
-    backdrop-filter: blur(16px);
+    width: 100%; max-width: 440px; backdrop-filter: blur(16px);
   }
   .form-card h2 { color: #fff; font-size: 20px; font-weight: 700; margin-bottom: 4px; }
   .form-card p  { color: rgba(255,255,255,.45); font-size: 13px; margin-bottom: 20px; }
-
   .field { margin-bottom: 13px; }
   .field label { display: block; color: rgba(255,255,255,.55); font-size: 12px; margin-bottom: 5px; }
   .field input {
     width: 100%; padding: 13px 16px;
-    background: rgba(255,255,255,.07);
-    border: 1.5px solid rgba(255,255,255,.13);
+    background: rgba(255,255,255,.07); border: 1.5px solid rgba(255,255,255,.13);
     border-radius: 10px; color: #fff; font-size: 16px;
     outline: none; transition: border-color .2s;
     -webkit-appearance: none; appearance: none;
@@ -214,7 +275,6 @@
   .field input:focus { border-color: var(--azul-c); }
   .field input::placeholder { color: rgba(255,255,255,.22); }
   .field input.err { border-color: var(--vermelho); }
-
   .btn-reveal {
     width: 100%; padding: 16px;
     background: linear-gradient(135deg, var(--amarelo), var(--laranja));
@@ -224,28 +284,21 @@
     transition: transform .12s, opacity .12s; margin-top: 4px;
   }
   .btn-reveal:active { transform: scale(.97); opacity: .9; }
-
   .btn-skip {
     width: 100%; max-width: 440px; padding: 15px;
-    background: rgba(255,255,255,.05);
-    border: 1.5px solid rgba(255,255,255,.18);
-    border-radius: 12px;
-    color: rgba(255,255,255,.6); font-size: 16px; font-weight: 600;
-    cursor: pointer; margin-top: 12px;
-    transition: background .2s;
+    background: rgba(255,255,255,.05); border: 1.5px solid rgba(255,255,255,.18);
+    border-radius: 12px; color: rgba(255,255,255,.6); font-size: 16px; font-weight: 600;
+    cursor: pointer; margin-top: 12px; transition: background .2s;
   }
   .btn-skip:active { background: rgba(255,255,255,.1); }
 
-  /* ── TELA 5 — PRÊMIO ── */
+  /* ── PRÊMIO ── */
   #s-result { gap: 18px; }
-
   .prize-card {
-    background: rgba(255,255,255,.05);
-    border: 2px solid rgba(255,255,255,.15);
+    background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.15);
     border-radius: 26px; padding: 34px 30px;
     width: 100%; max-width: 460px;
-    text-align: center; position: relative; overflow: hidden;
-    backdrop-filter: blur(16px);
+    text-align: center; position: relative; overflow: hidden; backdrop-filter: blur(16px);
   }
   .prize-card::before {
     content: ''; position: absolute; inset: 0;
@@ -254,104 +307,62 @@
   }
   .prize-in { animation: pop-in .55s cubic-bezier(.34,1.56,.64,1); }
   @keyframes pop-in { from { transform: scale(.4) rotate(-8deg); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-
   #p-icon { font-size: 66px; margin-bottom: 10px; }
   .p-congrats { color: var(--amarelo); font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; }
   #p-name { color: #fff; font-size: 26px; font-weight: 800; margin: 6px 0 8px; }
   #p-desc { color: rgba(255,255,255,.55); font-size: 14px; line-height: 1.6; }
-  #p-pain {
-    margin-top: 14px;
-    background: rgba(30,86,200,.25); border: 1px solid rgba(30,86,200,.4);
-    color: var(--ciano); font-size: 13px; font-weight: 600;
-    padding: 6px 14px; border-radius: 20px; display: none;
-  }
-
   .btn-restart {
     background: none; border: 1.5px solid rgba(255,255,255,.2);
     color: rgba(255,255,255,.5); border-radius: 12px;
-    padding: 12px 36px; font-size: 15px; cursor: pointer;
-    transition: all .18s;
+    padding: 12px 36px; font-size: 15px; cursor: pointer; transition: all .18s;
   }
   .btn-restart:active { background: rgba(255,255,255,.08); }
 
   /* ── CONFETTI ── */
-  .cf {
-    position: fixed; top: -20px; pointer-events: none; z-index: 999;
-    border-radius: 2px; animation: fall linear forwards;
-  }
+  .cf { position: fixed; top: -20px; pointer-events: none; z-index: 999; border-radius: 2px; animation: fall linear forwards; }
   @keyframes fall { to { transform: translateY(110vh) rotate(720deg); opacity: 0; } }
 
-  /* ══════════════════════════════════
-     ADMIN — tela de leads
-  ══════════════════════════════════ */
-  #s-admin {
-    padding: 20px 18px; gap: 0;
-    align-items: stretch; justify-content: flex-start;
-    overflow-y: auto;
-  }
-
-  .adm-hd {
-    display: flex; justify-content: space-between; align-items: center;
-    margin-bottom: 6px; flex-shrink: 0; flex-wrap: wrap; gap: 8px;
-  }
+  /* ── ADMIN ── */
+  #s-admin { padding: 20px 18px; gap: 0; align-items: stretch; justify-content: flex-start; overflow-y: auto; }
+  .adm-hd { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; flex-shrink: 0; flex-wrap: wrap; gap: 8px; }
   .adm-hd h2 { color: #fff; font-size: 17px; }
   .adm-btns { display: flex; gap: 8px; flex-wrap: wrap; }
-  .ab {
-    padding: 9px 14px; border-radius: 9px;
-    font-size: 13px; font-weight: 600; cursor: pointer; border: none;
-  }
+  .ab { padding: 9px 14px; border-radius: 9px; font-size: 13px; font-weight: 600; cursor: pointer; border: none; }
   .ab-exp { background: var(--verde); color: #fff; }
   .ab-clr { background: var(--vermelho); color: #fff; }
   .ab-bk  { background: rgba(255,255,255,.1); color: #fff; }
-  .ab-cfg { background: rgba(30,86,200,.4); color: #fff; }
-
   .adm-ct { color: rgba(255,255,255,.35); font-size: 12px; margin-bottom: 10px; }
-
   table { width: 100%; border-collapse: collapse; color: #fff; font-size: 12px; }
-  th {
-    background: rgba(255,255,255,.06); padding: 9px 10px; text-align: left;
-    color: rgba(255,255,255,.45); font-weight: 600;
-    border-bottom: 1px solid rgba(255,255,255,.07);
-    position: sticky; top: 0;
-  }
+  th { background: rgba(255,255,255,.06); padding: 9px 10px; text-align: left; color: rgba(255,255,255,.45); font-weight: 600; border-bottom: 1px solid rgba(255,255,255,.07); position: sticky; top: 0; }
   td { padding: 9px 10px; border-bottom: 1px solid rgba(255,255,255,.04); vertical-align: top; }
   .bg { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 600; }
   .bg-g { background: rgba(34,197,94,.18); color: var(--verde); }
   .bg-b { background: rgba(30,86,200,.2); color: var(--ciano); }
   .adm-empty { color: rgba(255,255,255,.25); text-align: center; padding: 40px; }
 
-  /* ── MODAL TELA CHEIA ── */
+  /* ── FULLSCREEN MODAL ── */
   #fs-modal {
-    position: fixed; inset: 0; z-index: 9999;
-    background: #060c1f;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center;
-    gap: 28px; padding: 40px;
-    transition: opacity .4s ease;
+    position: fixed; inset: 0; z-index: 9999; background: #060c1f;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    gap: 28px; padding: 40px; transition: opacity .4s ease;
   }
   #fs-modal.hidden { opacity: 0; pointer-events: none; }
-
   .fs-icon { font-size: 72px; animation: bounce-icon 1.6s infinite; }
-  @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
-
   .fs-title { color: #fff; font-size: 26px; font-weight: 800; text-align: center; }
   .fs-sub   { color: rgba(255,255,255,.5); font-size: 15px; text-align: center; line-height: 1.5; }
-
   .btn-fs {
     background: linear-gradient(135deg, var(--azul-c), var(--ciano));
     color: #fff; border: none; border-radius: 56px;
     padding: 18px 52px; font-size: 20px; font-weight: 800;
-    cursor: pointer; letter-spacing: .3px;
-    box-shadow: 0 8px 28px rgba(30,86,200,.5);
-    animation: pulse-btn 2s infinite;
-    transition: transform .12s;
+    cursor: pointer; box-shadow: 0 8px 28px rgba(30,86,200,.5);
+    animation: pulse-btn 2s infinite; transition: transform .12s;
   }
   .btn-fs:active { transform: scale(.95); }
 </style>
 </head>
 <body>
 
-<!-- ══ MODAL TELA CHEIA ══ -->
+<!-- MODAL FULLSCREEN -->
 <div id="fs-modal">
   <div class="fs-icon">⛶</div>
   <div class="fs-title">Ativar tela cheia</div>
@@ -361,33 +372,62 @@
 
 <canvas id="particles"></canvas>
 
-<!-- ══ TELA 1: INÍCIO ══ -->
+<!-- ══ INÍCIO ══ -->
 <div class="screen active" id="s-start">
+
   <div class="logo" id="logo-tap">
     <div class="logo-icon">⚡</div>
     <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
   </div>
 
-  <div class="headline">
-    <h1>Gire e <em>Ganhe!</em></h1>
-    <p>Toque para descobrir seu brinde exclusivo</p>
+  <!-- PAINEL ROLETA -->
+  <div class="mode-panel active" id="panel-wheel">
+    <div class="headline">
+      <h1>Gire e <em>Ganhe!</em></h1>
+      <p>Toque para descobrir seu brinde exclusivo</p>
+    </div>
+    <div class="wheel-wrap">
+      <div class="wheel-pointer"></div>
+      <canvas id="cv-idle" width="360" height="360"></canvas>
+      <div class="wheel-center">🎁</div>
+    </div>
   </div>
 
-  <div class="wheel-wrap">
-    <div class="wheel-pointer"></div>
-    <canvas id="cv-idle" width="360" height="360"></canvas>
-    <div class="wheel-center">🎁</div>
+  <!-- PAINEL CAÇA-NÍQUEL -->
+  <div class="mode-panel" id="panel-slot">
+    <div class="slot-preview">
+      <div class="slot-preview-title">🎰 Caça-Níquel</div>
+      <div class="slot-preview-reels">
+        <div class="slot-prev-reel">🍒</div>
+        <div class="slot-prev-reel">⭐</div>
+        <div class="slot-prev-reel">💎</div>
+      </div>
+      <div class="slot-preview-desc">Alinhe 3 símbolos iguais e ganhe um brinde!</div>
+      <div class="slot-preview-desc" style="margin-top:4px">Cada participante tem <strong style="color:var(--amarelo)">10 tentativas</strong></div>
+    </div>
+    <div class="slot-tries-badge">Tentativas restantes: <span id="tries-badge">10</span> / 10</div>
+  </div>
+
+  <!-- PAINEL QUIZ -->
+  <div class="mode-panel" id="panel-quiz">
+    <div class="quiz-preview">
+      <div class="quiz-preview-icon">⚽</div>
+      <div class="quiz-preview-title">Quiz Copa 2026</div>
+      <div class="quiz-preview-sub">Adivinhe os placares e resultados dos jogos da Copa do Mundo 2026</div>
+      <div class="quiz-preview-badge">🎁 Todo mundo ganha um brinde!</div>
+    </div>
   </div>
 
   <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
 
   <div class="start-bottom">
-    <button class="btn-admin-tiny" id="btn-admin-tiny">leads</button>
-    <button class="btn-admin-tiny" id="btn-slot-toggle">🎰 caça-níquel</button>
+    <button class="btn-tiny" id="btn-admin-tiny">leads</button>
+    <button class="btn-tiny" id="btn-slot-toggle">🎰 caça-níquel</button>
+    <button class="btn-tiny" id="btn-quiz-toggle">⚽ quiz copa</button>
   </div>
 </div>
 
-<!-- ══ TELA 2: GIRANDO ══ -->
+<!-- ══ GIRANDO ROLETA ══ -->
 <div class="screen" id="s-spin">
   <div class="wheel-wrap">
     <div class="wheel-pointer"></div>
@@ -397,14 +437,15 @@
   <div class="spin-label">A sorte está sendo lançada...</div>
 </div>
 
-<!-- ══ TELA SLOT ══ -->
+<!-- ══ CAÇA-NÍQUEL ══ -->
 <div class="screen" id="s-slot">
   <div class="logo">
     <div class="logo-icon">⚡</div>
     <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
   </div>
   <div class="slot-machine">
-    <div class="slot-title-bar">🎰 Caça-Níquel</div>
+    <div class="slot-title-bar">🎰 Caça-Níquel LimaTech</div>
+    <div class="slot-tries-bar">Tentativas: <span id="slot-tries-num">10</span> / 10</div>
     <div class="slot-reels">
       <canvas class="reel-cv" id="reel-0" width="90" height="274"></canvas>
       <canvas class="reel-cv" id="reel-1" width="90" height="274"></canvas>
@@ -412,10 +453,38 @@
       <div class="slot-win-line" id="slot-win-line"></div>
     </div>
   </div>
-  <div class="spin-label">Girando...</div>
+  <div class="slot-status" id="slot-status">Girando os rolos...</div>
+  <div id="slot-after"></div>
 </div>
 
-<!-- ══ TELA 3: FORMULÁRIO ══ -->
+<!-- ══ QUIZ ══ -->
+<div class="screen" id="s-quiz">
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-txt"><strong>LimaTech</strong><small>Services</small></div>
+  </div>
+  <div class="quiz-badge-sm">⚽ Copa do Mundo 2026</div>
+  <div class="quiz-card">
+    <div class="quiz-match">
+      <div class="quiz-team">
+        <span class="quiz-flag" id="q-flag-a"></span>
+        <span class="quiz-tname" id="q-name-a"></span>
+      </div>
+      <div class="quiz-vs">×</div>
+      <div class="quiz-team">
+        <span class="quiz-flag" id="q-flag-b"></span>
+        <span class="quiz-tname" id="q-name-b"></span>
+      </div>
+    </div>
+    <div class="quiz-date" id="q-date"></div>
+    <div class="quiz-question" id="q-question"></div>
+    <div class="quiz-opts" id="q-opts"></div>
+    <div class="quiz-feedback" id="q-feedback"></div>
+    <button class="btn-quiz-next" id="btn-quiz-next">Continuar →</button>
+  </div>
+</div>
+
+<!-- ══ FORMULÁRIO ══ -->
 <div class="screen" id="s-form">
   <div class="mystery-prize">
     <div class="mystery-icon">🎁</div>
@@ -424,11 +493,9 @@
       <span>Preencha seus dados para revelar 👇</span>
     </div>
   </div>
-
   <div class="form-card">
     <h2>Quase lá!</h2>
     <p>Só precisamos de duas informações para liberar seu brinde</p>
-
     <div class="field">
       <label>Seu nome</label>
       <input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off">
@@ -437,14 +504,12 @@
       <label>WhatsApp</label>
       <input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off" inputmode="tel">
     </div>
-
     <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
   </div>
-
   <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
 </div>
 
-<!-- ══ TELA 5: PRÊMIO ══ -->
+<!-- ══ PRÊMIO ══ -->
 <div class="screen" id="s-result">
   <div class="logo">
     <div class="logo-icon">⚡</div>
@@ -471,106 +536,171 @@
       <button class="ab ab-bk"  id="btn-bk">← Voltar</button>
     </div>
   </div>
-
   <div class="adm-ct" id="adm-ct"></div>
   <div id="adm-body"></div>
 </div>
 
 <script>
-// ══ PRÊMIOS (apenas itens disponíveis no estande) ══
+// ════════════════════════════════
+// DADOS
+// ════════════════════════════════
 const SEGS = [
-  { label:'Kit\nCompleto',     icon:'🎁', color:'#1e56c8', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',     emoji:'🎁' },
-  { label:'Mousepad\n+Caneta', icon:'🎁', color:'#8b5cf6', prize:'Mousepad + Caneta',       desc:'Mousepad personalizado + Caneta LimaTech. Retire com nossa equipe!', emoji:'🎁' },
-  { label:'Kit\nCompleto',     icon:'🎁', color:'#06b6d4', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',     emoji:'🎁' },
-  { label:'Caneta\n+Caderneta',icon:'🎁', color:'#f59e0b', prize:'Caneta + Caderneta',      desc:'Caneta + Caderneta personalizadas LimaTech. Retire com nossa equipe!',emoji:'🎁' },
-  { label:'Kit\nCompleto',     icon:'🎁', color:'#22c55e', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',     emoji:'🎁' },
-  { label:'Caneta\nLimaTech',  icon:'🎁', color:'#ef4444', prize:'Caneta LimaTech',         desc:'Caneta personalizada LimaTech. Retire agora com nossa equipe!',      emoji:'🎁' },
+  { label:'Kit\nCompleto',     icon:'🎁', color:'#1e56c8', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',      emoji:'🎁' },
+  { label:'Mousepad\n+Caneta', icon:'🎁', color:'#8b5cf6', prize:'Mousepad + Caneta',       desc:'Mousepad personalizado + Caneta LimaTech. Retire com nossa equipe!',  emoji:'🎁' },
+  { label:'Kit\nCompleto',     icon:'🎁', color:'#06b6d4', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',      emoji:'🎁' },
+  { label:'Caneta\n+Caderneta',icon:'🎁', color:'#f59e0b', prize:'Caneta + Caderneta',      desc:'Caneta + Caderneta personalizadas LimaTech. Retire com nossa equipe!', emoji:'🎁' },
+  { label:'Kit\nCompleto',     icon:'🎁', color:'#22c55e', prize:'Kit LimaTech Completo',  desc:'Mousepad + Caneta + Caderneta. Retire agora com nossa equipe!',      emoji:'🎁' },
+  { label:'Caneta\nLimaTech',  icon:'🎁', color:'#ef4444', prize:'Caneta LimaTech',         desc:'Caneta personalizada LimaTech. Retire agora com nossa equipe!',       emoji:'🎁' },
 ];
 
-// ══ ESTADO ══
-let cur = 's-start', seg = null, lead = null;
+const SLOT_SYMS = [
+  { emoji:'7️⃣', color:'#22c55e' },
+  { emoji:'💎', color:'#06b6d4' },
+  { emoji:'🍒', color:'#ef4444' },
+  { emoji:'⭐', color:'#f59e0b' },
+  { emoji:'🍋', color:'#ca8a04' },
+  { emoji:'🔔', color:'#f97316' },
+  { emoji:'🍇', color:'#8b5cf6' },
+  { emoji:'🍀', color:'#16a34a' },
+];
+
+const PARTIDAS = [
+  { fa:'🇲🇽', ta:'México',          sa:2, fb:'🇿🇦', tb:'África do Sul',   sb:0, data:'11/06' },
+  { fa:'🇰🇷', ta:'Coreia do Sul',    sa:2, fb:'🇨🇿', tb:'Tchéquia',        sb:1, data:'11/06' },
+  { fa:'🇨🇦', ta:'Canadá',          sa:1, fb:'🇧🇦', tb:'Bósnia e Herz.',  sb:1, data:'12/06' },
+  { fa:'🇺🇸', ta:'Estados Unidos',   sa:4, fb:'🇵🇾', tb:'Paraguai',        sb:1, data:'12/06' },
+  { fa:'🇶🇦', ta:'Catar',           sa:1, fb:'🇨🇭', tb:'Suíça',           sb:1, data:'13/06' },
+  { fa:'🇧🇷', ta:'Brasil',          sa:1, fb:'🇲🇦', tb:'Marrocos',        sb:1, data:'13/06' },
+  { fa:'🇭🇹', ta:'Haiti',           sa:0, fb:'🏴󠁧󠁢󠁳󠁣󠁴󠁿', tb:'Escócia',        sb:1, data:'13/06' },
+  { fa:'🇦🇺', ta:'Austrália',       sa:2, fb:'🇹🇷', tb:'Turquia',         sb:0, data:'14/06' },
+  { fa:'🇩🇪', ta:'Alemanha',        sa:7, fb:'🇨🇼', tb:'Curaçao',         sb:1, data:'14/06' },
+  { fa:'🇳🇱', ta:'Holanda',         sa:2, fb:'🇯🇵', tb:'Japão',           sb:2, data:'14/06' },
+  { fa:'🇨🇮', ta:'Costa do Marfim', sa:1, fb:'🇪🇨', tb:'Equador',         sb:0, data:'14/06' },
+];
+
+// ════════════════════════════════
+// ESTADO — antes de tudo
+// ════════════════════════════════
+let cur      = 's-start';
+let seg      = null;
+let lead     = null;
+let gameMode = 'wheel'; // 'wheel' | 'slot' | 'quiz'
 let idleAngle = 0, spinAngle = 0;
-let slotMode = false;
+let slotTries    = 10;
+let slotSpinning = false;
+let quizAnswered = false;
 
-// ══ AUDIO (criado na primeira interação — exigência do Android) ══
-let AC = null;
+// ════════════════════════════════
+// ÁUDIO
+// ════════════════════════════════
+let _ac = null;
 function getAC() {
-  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
-  if (AC.state === 'suspended') AC.resume();
-  return AC;
+  if (!_ac) _ac = new (window.AudioContext || window.webkitAudioContext)();
+  if (_ac.state === 'suspended') _ac.resume();
+  return _ac;
 }
-const resume = () => getAC();
-
-function tone(freq, type, vol, dur, delay = 0) {
-  const AC = getAC();
-  const o = AC.createOscillator(), g = AC.createGain();
-  o.connect(g); g.connect(AC.destination);
-  o.frequency.value = freq; o.type = type;
-  const t = AC.currentTime + delay;
-  g.gain.setValueAtTime(0, t);
-  g.gain.linearRampToValueAtTime(vol, t + .02);
-  g.gain.exponentialRampToValueAtTime(.001, t + dur);
-  o.start(t); o.stop(t + dur);
+function tone(freq, type, vol, dur, delay) {
+  try {
+    const ac = getAC(), d = delay||0;
+    const o = ac.createOscillator(), g = ac.createGain();
+    o.connect(g); g.connect(ac.destination);
+    o.frequency.value = freq; o.type = type;
+    const t = ac.currentTime + d;
+    g.gain.setValueAtTime(0, t);
+    g.gain.linearRampToValueAtTime(vol, t + .02);
+    g.gain.exponentialRampToValueAtTime(.001, t + dur);
+    o.start(t); o.stop(t + dur);
+  } catch(e) {}
 }
-const tick  = () => tone(900, 'square', .1, .05);
-const click = () => tone(440, 'sine', .18, .08);
-const win   = () => [523, 659, 784, 1047].forEach((f, i) => tone(f, 'sine', .3, .35, i * .11));
+const sndTick  = () => tone(900, 'square', .07, .05);
+const sndClick = () => tone(440, 'sine',   .18, .08);
+const sndWin   = () => [523,659,784,1047].forEach((f,i) => tone(f,'sine',.3,.35,i*.11));
 
-// ══ PARTÍCULAS ══
-(function () {
+function sndSlotRoll(sec) {
+  try {
+    const ac = getAC();
+    const len = ac.sampleRate * sec;
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) {
+      const t = i / ac.sampleRate;
+      const pulse = Math.abs(Math.sin(Math.PI * 20 * t));
+      d[i] = (Math.random() * 2 - 1) * pulse * 0.12;
+    }
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const g = ac.createGain();
+    g.gain.setValueAtTime(1, ac.currentTime);
+    g.gain.linearRampToValueAtTime(0, ac.currentTime + sec);
+    src.connect(g); g.connect(ac.destination);
+    src.start(); src.stop(ac.currentTime + sec);
+  } catch(e) {}
+}
+
+function sndSlotThud() {
+  try {
+    const ac = getAC();
+    const len = Math.floor(ac.sampleRate * 0.12);
+    const buf = ac.createBuffer(1, len, ac.sampleRate);
+    const d = buf.getChannelData(0);
+    for (let i = 0; i < len; i++) d[i] = (Math.random()*2-1) * (1 - i/len) * 0.5;
+    const src = ac.createBufferSource(); src.buffer = buf;
+    const bq = ac.createBiquadFilter(); bq.type = 'lowpass'; bq.frequency.value = 180;
+    src.connect(bq); bq.connect(ac.destination); src.start();
+  } catch(e) {}
+}
+
+// ════════════════════════════════
+// PARTÍCULAS
+// ════════════════════════════════
+(function(){
   const c = document.getElementById('particles'), x = c.getContext('2d');
   c.width = window.innerWidth; c.height = window.innerHeight;
-  const pts = Array.from({ length: 50 }, () => ({
-    x: Math.random() * c.width, y: Math.random() * c.height,
-    r: Math.random() * 1.4 + .4,
-    vx: (Math.random() - .5) * .27, vy: (Math.random() - .5) * .27,
-    a: Math.random() * .45 + .1
+  const pts = Array.from({length:50},()=>({
+    x:Math.random()*c.width, y:Math.random()*c.height,
+    r:Math.random()*1.4+.4, vx:(Math.random()-.5)*.27, vy:(Math.random()-.5)*.27, a:Math.random()*.45+.1
   }));
-  (function draw() {
-    x.clearRect(0, 0, c.width, c.height);
-    pts.forEach(p => {
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = c.width; if (p.x > c.width) p.x = 0;
-      if (p.y < 0) p.y = c.height; if (p.y > c.height) p.y = 0;
-      x.beginPath(); x.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-      x.fillStyle = `rgba(30,86,200,${p.a})`; x.fill();
+  (function draw(){
+    x.clearRect(0,0,c.width,c.height);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=c.width; if(p.x>c.width)p.x=0;
+      if(p.y<0)p.y=c.height; if(p.y>c.height)p.y=0;
+      x.beginPath(); x.arc(p.x,p.y,p.r,0,Math.PI*2);
+      x.fillStyle=`rgba(30,86,200,${p.a})`; x.fill();
     });
     requestAnimationFrame(draw);
   })();
 })();
 
-// ══ ROLETA ══
+// ════════════════════════════════
+// ROLETA
+// ════════════════════════════════
 function drawWheel(canvas, angle) {
   const ctx = canvas.getContext('2d');
-  const W = canvas.width, cx = W / 2, R = cx - 4;
-  const n = SEGS.length, arc = Math.PI * 2 / n;
-  ctx.clearRect(0, 0, W, W);
-
-  SEGS.forEach((s, i) => {
-    const a0 = angle + i * arc - Math.PI / 2, a1 = a0 + arc;
-    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 10;
-    ctx.beginPath(); ctx.moveTo(cx, cx); ctx.arc(cx, cx, R, a0, a1); ctx.closePath();
-    ctx.fillStyle = s.color; ctx.fill();
-    ctx.shadowBlur = 0;
-    ctx.strokeStyle = 'rgba(255,255,255,.18)'; ctx.lineWidth = 1.5; ctx.stroke();
-
-    ctx.save(); ctx.translate(cx, cx); ctx.rotate(a0 + arc / 2);
-    ctx.font = '21px serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fff'; ctx.fillText(s.icon, R * .66, 0);
-    const lines = s.label.split('\n');
-    ctx.font = 'bold 11.5px Segoe UI,sans-serif'; ctx.fillStyle = '#fff';
-    ctx.shadowColor = 'rgba(0,0,0,.7)'; ctx.shadowBlur = 3;
-    lines.forEach((ln, li) => ctx.fillText(ln, R * .34 + (li - (lines.length - 1) / 2) * 13, 0));
+  const W = canvas.width, cx = W/2, R = cx-4;
+  const n = SEGS.length, arc = Math.PI*2/n;
+  ctx.clearRect(0,0,W,W);
+  SEGS.forEach((s,i) => {
+    const a0 = angle + i*arc - Math.PI/2, a1 = a0+arc;
+    ctx.shadowColor='rgba(0,0,0,.4)'; ctx.shadowBlur=10;
+    ctx.beginPath(); ctx.moveTo(cx,cx); ctx.arc(cx,cx,R,a0,a1); ctx.closePath();
+    ctx.fillStyle=s.color; ctx.fill(); ctx.shadowBlur=0;
+    ctx.strokeStyle='rgba(255,255,255,.18)'; ctx.lineWidth=1.5; ctx.stroke();
+    ctx.save(); ctx.translate(cx,cx); ctx.rotate(a0+arc/2);
+    ctx.font='21px serif'; ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillStyle='#fff'; ctx.fillText(s.icon, R*.66, 0);
+    const lines=s.label.split('\n');
+    ctx.font='bold 11.5px Segoe UI,sans-serif'; ctx.fillStyle='#fff';
+    ctx.shadowColor='rgba(0,0,0,.7)'; ctx.shadowBlur=3;
+    lines.forEach((ln,li) => ctx.fillText(ln, R*.34+(li-(lines.length-1)/2)*13, 0));
     ctx.restore();
   });
-
-  ctx.beginPath(); ctx.arc(cx, cx, R, 0, Math.PI * 2);
-  ctx.strokeStyle = 'rgba(255,255,255,.22)'; ctx.lineWidth = 3; ctx.stroke();
+  ctx.beginPath(); ctx.arc(cx,cx,R,0,Math.PI*2);
+  ctx.strokeStyle='rgba(255,255,255,.22)'; ctx.lineWidth=3; ctx.stroke();
 }
 
 const cvIdle = document.getElementById('cv-idle');
 const cvSpin = document.getElementById('cv-spin');
-
 function idleLoop() {
   idleAngle += .0035;
   drawWheel(cvIdle, idleAngle);
@@ -579,7 +709,9 @@ function idleLoop() {
 drawWheel(cvIdle, 0);
 requestAnimationFrame(idleLoop);
 
-// ══ NAVEGAÇÃO ══
+// ════════════════════════════════
+// NAVEGAÇÃO
+// ════════════════════════════════
 function go(id) {
   document.getElementById(cur).classList.remove('active');
   document.getElementById(id).classList.add('active');
@@ -587,68 +719,325 @@ function go(id) {
   if (id === 's-start') requestAnimationFrame(idleLoop);
 }
 
-// ══ CONFETTI ══
+// ════════════════════════════════
+// CONFETTI
+// ════════════════════════════════
 function confetti() {
-  const cols = ['#f59e0b', '#22c55e', '#1e56c8', '#ef4444', '#8b5cf6', '#06b6d4', '#fff'];
-  for (let i = 0; i < 90; i++) {
-    const el = document.createElement('div');
-    el.className = 'cf';
-    el.style.cssText = `left:${Math.random()*100}vw;width:${Math.random()*10+5}px;height:${Math.random()*14+7}px;background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${Math.random()*2+1.8}s;animation-delay:${Math.random()*.6}s`;
-    document.body.appendChild(el);
-    el.addEventListener('animationend', () => el.remove());
+  const cols=['#f59e0b','#22c55e','#1e56c8','#ef4444','#8b5cf6','#06b6d4','#fff'];
+  for(let i=0;i<90;i++){
+    const el=document.createElement('div'); el.className='cf';
+    el.style.cssText=`left:${Math.random()*100}vw;width:${Math.random()*10+5}px;height:${Math.random()*14+7}px;background:${cols[i%cols.length]};border-radius:${Math.random()>.5?'50%':'2px'};animation-duration:${Math.random()*2+1.8}s;animation-delay:${Math.random()*.6}s`;
+    document.body.appendChild(el); el.addEventListener('animationend',()=>el.remove());
   }
 }
 
-// ══ SPIN ══
+// ════════════════════════════════
+// SPIN ROLETA
+// ════════════════════════════════
 function getTopIdx(angle) {
-  const arc = Math.PI * 2 / SEGS.length;
-  const norm = ((-angle % (Math.PI * 2)) + Math.PI * 2) % (Math.PI * 2);
-  return Math.floor(norm / arc) % SEGS.length;
+  const arc = Math.PI*2/SEGS.length;
+  const norm = ((-angle%(Math.PI*2))+Math.PI*2)%(Math.PI*2);
+  return Math.floor(norm/arc)%SEGS.length;
 }
-
 function doSpin(targetIdx) {
   drawWheel(cvSpin, spinAngle);
-  const arc = Math.PI * 2 / SEGS.length, n = SEGS.length;
-  const spins = (5 + Math.floor(Math.random() * 3)) * Math.PI * 2;
-  const curPos = spinAngle % (Math.PI * 2);
-  let delta = (((n - targetIdx) * arc) % (Math.PI * 2)) - curPos;
-  if (delta <= 0) delta += Math.PI * 2;
-  const target = spinAngle + spins + delta;
-  const dur = 4200, t0 = performance.now(), a0 = spinAngle;
-  let lastIdx = -1;
-
-  (function frame(now) {
-    const p = Math.min((now - t0) / dur, 1);
-    spinAngle = a0 + (target - a0) * (1 - Math.pow(1 - p, 3));
-    drawWheel(cvSpin, spinAngle);
-    const ci = getTopIdx(spinAngle);
-    if (ci !== lastIdx) { tick(); lastIdx = ci; }
-    p < 1 ? requestAnimationFrame(frame) : setTimeout(afterSpin, 350);
+  const arc = Math.PI*2/SEGS.length, n = SEGS.length;
+  const spins = (5+Math.floor(Math.random()*3))*Math.PI*2;
+  const curPos = spinAngle%(Math.PI*2);
+  let delta = (((n-targetIdx)*arc)%(Math.PI*2))-curPos;
+  if(delta<=0) delta+=Math.PI*2;
+  const target=spinAngle+spins+delta;
+  const dur=4200, t0=performance.now(), a0=spinAngle;
+  let lastIdx=-1;
+  (function frame(now){
+    const p=Math.min((now-t0)/dur,1);
+    spinAngle=a0+(target-a0)*(1-Math.pow(1-p,3));
+    drawWheel(cvSpin,spinAngle);
+    const ci=getTopIdx(spinAngle);
+    if(ci!==lastIdx){ sndTick(); lastIdx=ci; }
+    p<1 ? requestAnimationFrame(frame) : setTimeout(()=>{ sndWin(); confetti(); go('s-form'); },350);
   })(t0);
 }
 
-function afterSpin() {
-  win(); confetti(); go('s-form');
+// ════════════════════════════════
+// CAÇA-NÍQUEL
+// ════════════════════════════════
+const CELL_H = 90, REEL_H = 274, REEL_W = 90;
+
+function drawReel(canvas, offset) {
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, REEL_W, REEL_H);
+  const first = Math.floor(offset / CELL_H);
+  const frac  = offset % CELL_H;
+  for (let i = 0; i <= 3; i++) {
+    const si = (first + i) % SLOT_SYMS.length;
+    const sym = SLOT_SYMS[si];
+    const y = i * CELL_H - frac;
+    ctx.fillStyle = sym.color + '44';
+    ctx.fillRect(0, y, REEL_W, CELL_H);
+    ctx.strokeStyle = 'rgba(255,255,255,.07)'; ctx.lineWidth = 1;
+    ctx.strokeRect(0, y, REEL_W, CELL_H);
+    ctx.font = '40px serif';
+    ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.shadowColor = 'rgba(0,0,0,.4)'; ctx.shadowBlur = 4;
+    ctx.fillStyle = '#fff';
+    ctx.fillText(sym.emoji, REEL_W/2, y + CELL_H/2);
+    ctx.shadowBlur = 0;
+  }
+  const gt = ctx.createLinearGradient(0, 0, 0, CELL_H*.85);
+  gt.addColorStop(0,'rgba(13,21,32,.95)'); gt.addColorStop(1,'transparent');
+  ctx.fillStyle=gt; ctx.fillRect(0,0,REEL_W,CELL_H*.85);
+  const gb = ctx.createLinearGradient(0, REEL_H-CELL_H*.85, 0, REEL_H);
+  gb.addColorStop(0,'transparent'); gb.addColorStop(1,'rgba(13,21,32,.95)');
+  ctx.fillStyle=gb; ctx.fillRect(0,REEL_H-CELL_H*.85,REEL_W,CELL_H*.85);
 }
 
-// ══ MOSTRAR PRÊMIO ══
+function calcReelTarget(curOffset, symIdx) {
+  const n = SLOT_SYMS.length;
+  const wantedK = (symIdx - 1 + n) % n;
+  const minCells = Math.ceil(curOffset / CELL_H) + 22;
+  const extra = (wantedK - (minCells % n) + n) % n;
+  return (minCells + extra) * CELL_H;
+}
+
+function syncTriesBadge() {
+  document.getElementById('tries-badge').textContent = slotTries;
+  document.getElementById('slot-tries-num').textContent = slotTries;
+}
+
+function doSlotSpin() {
+  if (slotSpinning) return;
+  slotSpinning = true;
+  const cvs = [0,1,2].map(i => document.getElementById('reel-' + i));
+  const winLine = document.getElementById('slot-win-line');
+  const statusEl = document.getElementById('slot-status');
+  const afterEl  = document.getElementById('slot-after');
+  winLine.classList.remove('flash');
+  afterEl.innerHTML = '';
+  statusEl.textContent = 'Girando os rolos...';
+
+  const isWin = Math.random() < 0.30;
+  let targets;
+  if (isWin) {
+    const s = Math.floor(Math.random() * SLOT_SYMS.length);
+    targets = [s, s, s];
+  } else {
+    targets = [0,1,2].map(() => Math.floor(Math.random() * SLOT_SYMS.length));
+    // garante pelo menos dois diferentes
+    while (targets[0] === targets[1] && targets[1] === targets[2]) {
+      targets[1] = (targets[1] + 1 + Math.floor(Math.random()*(SLOT_SYMS.length-1))) % SLOT_SYMS.length;
+    }
+  }
+
+  cvs.forEach(cv => drawReel(cv, 0));
+  sndSlotRoll(2.6);
+
+  const reels = cvs.map((cv, i) => ({
+    cv, offset:0, speed:0, targetOffset:0,
+    symIdx: targets[i], stopFrame: 85 + i*40,
+    frame:0, phase:'accel', done:false,
+  }));
+
+  function frame() {
+    let allDone = true;
+    reels.forEach(r => {
+      if (r.done) return;
+      allDone = false;
+      r.frame++;
+      switch (r.phase) {
+        case 'accel':
+          r.speed = Math.min(r.speed + 2, 32);
+          if (r.speed >= 32) r.phase = 'spin';
+          r.offset += r.speed;
+          break;
+        case 'spin':
+          r.offset += r.speed;
+          if (r.frame >= r.stopFrame) {
+            r.targetOffset = calcReelTarget(r.offset, r.symIdx);
+            r.phase = 'decel';
+          }
+          break;
+        case 'decel': {
+          const rem = r.targetOffset - r.offset;
+          if (rem <= 1) {
+            r.offset = r.targetOffset; r.phase = 'done'; r.done = true;
+            r.cv.classList.remove('reel-bounce'); void r.cv.offsetWidth; r.cv.classList.add('reel-bounce');
+            sndSlotThud();
+          } else {
+            r.speed = Math.max(rem * 0.14, 1.5);
+            r.offset += r.speed;
+          }
+          break;
+        }
+      }
+      drawReel(r.cv, r.offset);
+    });
+    if (!allDone) requestAnimationFrame(frame);
+    else onSlotEnd(isWin);
+  }
+  requestAnimationFrame(frame);
+}
+
+function onSlotEnd(isWin) {
+  slotSpinning = false;
+  const winLine  = document.getElementById('slot-win-line');
+  const statusEl = document.getElementById('slot-status');
+  const afterEl  = document.getElementById('slot-after');
+
+  if (isWin) {
+    winLine.classList.add('flash');
+    statusEl.textContent = '🎉 Você acertou! Parabéns!';
+    sndWin(); confetti();
+    slotTries = 10; syncTriesBadge();
+    setTimeout(() => go('s-form'), 1600);
+  } else {
+    slotTries--;
+    syncTriesBadge();
+    if (slotTries > 0) {
+      statusEl.textContent = `Não desta vez! Tente novamente (${slotTries} tentativa${slotTries!==1?'s':''} restante${slotTries!==1?'s':''})`;
+      const btn = document.createElement('button');
+      btn.className = 'btn-slot-again';
+      btn.textContent = '🎰 Tentar novamente';
+      btn.addEventListener('click', () => {
+        getAC(); sndClick();
+        seg = SEGS[Math.floor(Math.random() * SEGS.length)];
+        afterEl.innerHTML = '';
+        doSlotSpin();
+      });
+      afterEl.appendChild(btn);
+    } else {
+      statusEl.textContent = 'Fim das tentativas! Você ainda ganha um brinde! 🎁';
+      slotTries = 10; syncTriesBadge();
+      sndWin();
+      setTimeout(() => { confetti(); go('s-form'); }, 1400);
+    }
+  }
+}
+
+// ════════════════════════════════
+// QUIZ
+// ════════════════════════════════
+function startQuiz() {
+  quizAnswered = false;
+  const p = PARTIDAS[Math.floor(Math.random() * PARTIDAS.length)];
+  const useScore = Math.random() > .4;
+  document.getElementById('q-flag-a').textContent = p.fa;
+  document.getElementById('q-name-a').textContent = p.ta;
+  document.getElementById('q-flag-b').textContent = p.fb;
+  document.getElementById('q-name-b').textContent = p.tb;
+  document.getElementById('q-date').textContent = `Copa do Mundo 2026 · ${p.data}`;
+  document.getElementById('q-feedback').style.display = 'none';
+  document.getElementById('q-feedback').className = 'quiz-feedback';
+  document.getElementById('btn-quiz-next').style.display = 'none';
+  const optsEl = document.getElementById('q-opts');
+  optsEl.innerHTML = '';
+
+  if (useScore) {
+    document.getElementById('q-question').textContent = 'Qual foi o placar final?';
+    const correct = `${p.sa} – ${p.sb}`;
+    const wrongs = makeWrongScores(p.sa, p.sb);
+    shuffle([correct, ...wrongs]).forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'quiz-opt'; b.textContent = opt;
+      b.addEventListener('click', () => handleQuizAnswer(opt === correct, correct, optsEl));
+      optsEl.appendChild(b);
+    });
+  } else {
+    document.getElementById('q-question').textContent = 'Qual foi o resultado do jogo?';
+    let correctLabel;
+    if (p.sa > p.sb)      correctLabel = `${p.ta} venceu`;
+    else if (p.sa < p.sb) correctLabel = `${p.tb} venceu`;
+    else                  correctLabel = 'Empate';
+    const opts = [`${p.ta} venceu`, 'Empate', `${p.tb} venceu`,
+                  p.sa !== p.sb ? 'Jogo cancelado' : `${p.ta} venceu nos pênaltis`];
+    shuffle(opts).forEach(opt => {
+      const b = document.createElement('button');
+      b.className = 'quiz-opt'; b.textContent = opt;
+      b.addEventListener('click', () => handleQuizAnswer(opt === correctLabel, correctLabel, optsEl));
+      optsEl.appendChild(b);
+    });
+  }
+  go('s-quiz');
+}
+
+function makeWrongScores(sa, sb) {
+  const wrongs = new Set();
+  const tries = [[sa+1,sb],[sa,sb+1],[sa-1<0?sa+2:sa-1,sb],[sa,sb-1<0?sb+2:sb-1],
+                 [sa+2,sb],[sa,sb+2],[0,0],[1,0],[0,1],[2,1],[1,2],[3,0]];
+  for (const [a,b] of tries) {
+    if (a!==sa || b!==sb) wrongs.add(`${a} – ${b}`);
+    if (wrongs.size >= 3) break;
+  }
+  return [...wrongs].slice(0,3);
+}
+function shuffle(arr) {
+  for (let i=arr.length-1; i>0; i--) { const j=Math.floor(Math.random()*(i+1)); [arr[i],arr[j]]=[arr[j],arr[i]]; }
+  return arr;
+}
+function handleQuizAnswer(isCorrect, correctLabel, optsEl) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  sndClick();
+  optsEl.querySelectorAll('.quiz-opt').forEach(b => {
+    b.classList.add(b.textContent === correctLabel ? 'correct' : 'wrong');
+    b.style.pointerEvents = 'none';
+  });
+  const fb = document.getElementById('q-feedback');
+  fb.style.display = 'block';
+  document.getElementById('btn-quiz-next').style.display = 'block';
+  if (isCorrect) {
+    confetti(); sndWin();
+    fb.className = 'quiz-feedback ok';
+    fb.textContent = '🎯 Acertou! Você ganhou um brinde!';
+  } else {
+    fb.className = 'quiz-feedback err';
+    fb.textContent = `O resultado correto era "${correctLabel}", mas você ainda ganhou um brinde! 🎁`;
+  }
+}
+document.getElementById('btn-quiz-next').addEventListener('click', () => { sndClick(); go('s-form'); });
+
+// ════════════════════════════════
+// PRÊMIO
+// ════════════════════════════════
 function showPrize() {
   document.getElementById('p-icon').textContent = seg.emoji;
   document.getElementById('p-name').textContent = seg.prize;
   document.getElementById('p-desc').textContent = seg.desc;
   document.getElementById('prize-card').style.borderColor = seg.color + '99';
-  confetti(); win(); go('s-result');
+  confetti(); sndWin(); go('s-result');
   if (lead && (lead.nome || lead.whatsapp)) saveLead();
 }
 
-// ══ BOTÕES ══
+// ════════════════════════════════
+// BOTÕES INÍCIO + MODO
+// ════════════════════════════════
+function setMode(mode) {
+  gameMode = mode;
+  // troca painel visível
+  ['wheel','slot','quiz'].forEach(m => {
+    document.getElementById('panel-'+m).classList.toggle('active', m === mode);
+  });
+  // atualiza toggles
+  document.getElementById('btn-slot-toggle').classList.toggle('on', mode === 'slot');
+  document.getElementById('btn-quiz-toggle').classList.toggle('on', mode === 'quiz');
+  // atualiza texto do botão
+  const labels = { wheel:'GIRAR AGORA', slot:'PUXAR ALAVANCA', quiz:'RESPONDER QUIZ' };
+  document.getElementById('btn-spin').textContent = labels[mode];
+}
+
 document.getElementById('btn-spin').addEventListener('click', () => {
-  resume(); click();
-  seg = SEGS[Math.floor(Math.random() * SEGS.length)];
+  getAC(); sndClick();
+  seg  = SEGS[Math.floor(Math.random() * SEGS.length)];
   lead = null;
-  if (slotMode) {
+
+  if (gameMode === 'slot') {
+    syncTriesBadge();
+    document.getElementById('slot-status').textContent = 'Girando os rolos...';
+    document.getElementById('slot-after').innerHTML = '';
     go('s-slot');
     setTimeout(doSlotSpin, 300);
+  } else if (gameMode === 'quiz') {
+    startQuiz();
   } else {
     go('s-spin');
     setTimeout(() => doSpin(SEGS.indexOf(seg)), 300);
@@ -656,9 +1045,13 @@ document.getElementById('btn-spin').addEventListener('click', () => {
 });
 
 document.getElementById('btn-slot-toggle').addEventListener('click', () => {
-  slotMode = !slotMode;
-  document.getElementById('btn-slot-toggle').classList.toggle('slot-on', slotMode);
-  click();
+  getAC(); sndClick();
+  setMode(gameMode === 'slot' ? 'wheel' : 'slot');
+});
+
+document.getElementById('btn-quiz-toggle').addEventListener('click', () => {
+  getAC(); sndClick();
+  setMode(gameMode === 'quiz' ? 'wheel' : 'quiz');
 });
 
 document.getElementById('btn-reveal').addEventListener('click', () => {
@@ -667,17 +1060,11 @@ document.getElementById('btn-reveal').addEventListener('click', () => {
   document.getElementById('inp-nome').classList.toggle('err', !nome);
   document.getElementById('inp-wpp').classList.toggle('err', !wpp);
   if (!nome || !wpp) return;
-  click();
-  lead = { nome, whatsapp: wpp, pain: null };
-  showPrize();
+  sndClick(); lead = { nome, whatsapp: wpp }; showPrize();
 });
-
-document.getElementById('btn-skip').addEventListener('click', () => {
-  click(); lead = null; showPrize();
-});
-
+document.getElementById('btn-skip').addEventListener('click', () => { sndClick(); lead = null; showPrize(); });
 document.getElementById('btn-restart').addEventListener('click', () => {
-  click(); seg = null; lead = null;
+  sndClick(); seg = null; lead = null;
   document.getElementById('inp-nome').value = '';
   document.getElementById('inp-wpp').value = '';
   document.getElementById('inp-nome').classList.remove('err');
@@ -685,277 +1072,84 @@ document.getElementById('btn-restart').addEventListener('click', () => {
   go('s-start');
 });
 
-// ══ SLOT MACHINE ══
-const CELL_H = 90;   // px per symbol cell
-const REEL_H = 274;  // canvas height (≈ 3 cells visible, center is the win line)
-const REEL_W = 90;
-const SLOT_COLORS = ['#1e56c8','#8b5cf6','#06b6d4','#f59e0b','#22c55e','#ef4444'];
-
-function drawReel(canvas, offset) {
-  const ctx = canvas.getContext('2d');
-  ctx.clearRect(0, 0, REEL_W, REEL_H);
-
-  // How many cells fit + 1 partial
-  const firstCell = Math.floor(offset / CELL_H);
-  const cellOffset = offset % CELL_H; // pixels into current top cell
-
-  for (let i = 0; i <= 3; i++) {
-    const ci = (firstCell + i) % SLOT_COLORS.length;
-    const y = i * CELL_H - cellOffset;
-
-    // Cell background
-    ctx.fillStyle = SLOT_COLORS[ci];
-    ctx.fillRect(0, y, REEL_W, CELL_H);
-
-    // Subtle inner border
-    ctx.strokeStyle = 'rgba(255,255,255,.12)';
-    ctx.lineWidth = 1;
-    ctx.strokeRect(0, y, REEL_W, CELL_H);
-
-    // 🎁 emoji
-    ctx.font = '40px serif';
-    ctx.textAlign = 'center';
-    ctx.textBaseline = 'middle';
-    ctx.fillStyle = '#fff';
-    ctx.shadowColor = 'rgba(0,0,0,.5)';
-    ctx.shadowBlur = 6;
-    ctx.fillText('🎁', REEL_W / 2, y + CELL_H / 2);
-    ctx.shadowBlur = 0;
-  }
-
-  // Top fade
-  const gt = ctx.createLinearGradient(0, 0, 0, CELL_H * .9);
-  gt.addColorStop(0, 'rgba(10,10,30,.92)');
-  gt.addColorStop(1, 'transparent');
-  ctx.fillStyle = gt; ctx.fillRect(0, 0, REEL_W, CELL_H * .9);
-
-  // Bottom fade
-  const gb = ctx.createLinearGradient(0, REEL_H - CELL_H * .9, 0, REEL_H);
-  gb.addColorStop(0, 'transparent');
-  gb.addColorStop(1, 'rgba(10,10,30,.92)');
-  ctx.fillStyle = gb; ctx.fillRect(0, REEL_H - CELL_H * .9, REEL_W, CELL_H * .9);
-}
-
-// offset such that the target color lands at center of the window
-// center cell top y = CELL_H (second visible cell)
-// => cellIndex in center = floor((offset + CELL_H) / CELL_H) = floor(offset/CELL_H) + 1
-// => we need (floor(offset/CELL_H) + 1) % n == targetColorIdx
-// => floor(offset/CELL_H) % n == (targetColorIdx - 1 + n) % n
-// The smallest integer k >= minK satisfying k % n == needed:
-function targetOffset(currentOffset, colorIdx) {
-  const n = SLOT_COLORS.length;
-  const needed = (colorIdx - 1 + n) % n;
-  const minK = Math.ceil(currentOffset / CELL_H) + 12; // at least 12 extra cells (~1 full cycle gap)
-  const extra = (needed - minK % n + n) % n;
-  return (minK + extra) * CELL_H;
-}
-
-function doSlotSpin() {
-  const cvs = [
-    document.getElementById('reel-0'),
-    document.getElementById('reel-1'),
-    document.getElementById('reel-2'),
-  ];
-  const winLine = document.getElementById('slot-win-line');
-  winLine.classList.remove('flash');
-
-  const colorIdx = SEGS.indexOf(seg) % SLOT_COLORS.length;
-
-  // Each reel state
-  const reels = cvs.map((cv, i) => ({
-    cv,
-    offset: 0,
-    speed: 0,
-    finalOffset: 0,
-    phase: 'accel',   // accel | spin | decel | done
-    stopFrame: 80 + i * 40, // reel 0 stops earliest
-    frame: 0,
-    done: false,
-  }));
-
-  // Pre-compute target offsets after spin (calculated once speed is known)
-  let rafId2;
-
-  function frame() {
-    let allDone = true;
-
-    reels.forEach(r => {
-      r.frame++;
-
-      if (r.phase === 'accel') {
-        r.speed = Math.min(r.speed + 1.5, 28);
-        if (r.speed >= 28) r.phase = 'spin';
-      }
-
-      if (r.phase === 'spin') {
-        if (r.frame >= r.stopFrame) {
-          // compute target now (based on current offset)
-          r.finalOffset = targetOffset(r.offset, colorIdx);
-          r.phase = 'decel';
-        }
-      }
-
-      if (r.phase === 'decel') {
-        const remaining = r.finalOffset - r.offset;
-        if (remaining <= 0.5) {
-          r.offset = r.finalOffset;
-          r.phase = 'done';
-          r.done = true;
-          // bounce effect on canvas
-          r.cv.classList.remove('reel-bounce');
-          void r.cv.offsetWidth; // reflow to restart animation
-          r.cv.classList.add('reel-bounce');
-          // tick sound
-          tone(600 + r.cv.id.slice(-1) * 80, 'sine', .25, .18);
-        } else {
-          // ease-out: speed proportional to remaining distance, capped
-          r.speed = Math.min(Math.max(remaining * 0.18, 1), 28);
-          r.offset += r.speed;
-        }
-      }
-
-      if (r.phase === 'spin') {
-        r.offset += r.speed;
-      } else if (r.phase === 'accel') {
-        r.offset += r.speed;
-      }
-
-      drawReel(r.cv, r.offset);
-      if (!r.done) allDone = false;
-    });
-
-    if (!allDone) {
-      rafId2 = requestAnimationFrame(frame);
-    } else {
-      // All stopped — flash win line then proceed
-      winLine.classList.add('flash');
-      setTimeout(() => { win(); confetti(); go('s-form'); }, 1400);
-    }
-  }
-
-  // Init with offset 0
-  reels.forEach(r => drawReel(r.cv, 0));
-  rafId2 = requestAnimationFrame(frame);
-}
-
-// ══ LEADS — localStorage ══
+// ════════════════════════════════
+// LEADS
+// ════════════════════════════════
 const LS_KEY = 'lt_leads';
-const getLeads = () => { try { return JSON.parse(localStorage.getItem(LS_KEY) || '[]'); } catch { return []; } };
+const getLeads = () => { try { return JSON.parse(localStorage.getItem(LS_KEY)||'[]'); } catch { return []; } };
 const setLeads = arr => localStorage.setItem(LS_KEY, JSON.stringify(arr));
-
 function saveLead() {
   const arr = getLeads();
-  const entry = {
-    id: Date.now(),
-    nome: lead.nome,
-    whatsapp: lead.whatsapp,
-    pain: lead.pain || '',
-    prize: seg.prize,
-    hora: new Date().toLocaleString('pt-BR', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' })
-  };
-  arr.push(entry);
+  arr.push({
+    id: Date.now(), nome: lead.nome, whatsapp: lead.whatsapp,
+    prize: seg.prize, modo: gameMode,
+    hora: new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})
+  });
   setLeads(arr);
 }
 
-// ══ ADMIN ══
-
-// Botão discreto abre admin
+// ════════════════════════════════
+// ADMIN
+// ════════════════════════════════
 document.getElementById('btn-admin-tiny').addEventListener('click', openAdmin);
-
-// Logo 8x também abre (mantido para compatibilidade)
-let tapN = 0, tapT = null;
+let tapN=0, tapT=null;
 document.getElementById('logo-tap').addEventListener('click', () => {
-  tapN++; clearTimeout(tapT);
-  tapT = setTimeout(() => tapN = 0, 2500);
-  if (tapN >= 8) { tapN = 0; openAdmin(); }
+  tapN++; clearTimeout(tapT); tapT=setTimeout(()=>tapN=0,2500);
+  if(tapN>=8){ tapN=0; openAdmin(); }
 });
-
 function openAdmin() {
   const arr = getLeads();
-  document.getElementById('adm-ct').textContent =
-    `${arr.length} lead${arr.length !== 1 ? 's' : ''} coletado${arr.length !== 1 ? 's' : ''}`;
-  renderTable(arr);
+  document.getElementById('adm-ct').textContent = `${arr.length} lead${arr.length!==1?'s':''} coletado${arr.length!==1?'s':''}`;
+  const body = document.getElementById('adm-body');
+  if (!arr.length) { body.innerHTML='<div class="adm-empty">Nenhum lead ainda.</div>'; }
+  else {
+    body.innerHTML=`<table><thead><tr><th>Nome</th><th>WhatsApp</th><th>Modo</th><th>Prêmio</th><th>Hora</th></tr></thead>
+    <tbody>${arr.slice().reverse().map(l=>`<tr>
+      <td>${l.nome||'—'}</td><td>${l.whatsapp||'—'}</td>
+      <td><span class="bg bg-b">${l.modo||'wheel'}</span></td>
+      <td><span class="bg bg-g">${l.prize}</span></td>
+      <td>${l.hora}</td></tr>`).join('')}</tbody></table>`;
+  }
   go('s-admin');
 }
-
-function renderTable(arr) {
-  const body = document.getElementById('adm-body');
-  if (!arr.length) {
-    body.innerHTML = '<div class="adm-empty">Nenhum lead ainda.</div>';
-    return;
-  }
-  body.innerHTML = `<table>
-    <thead><tr><th>Nome</th><th>WhatsApp</th><th>Dor</th><th>Prêmio</th><th>Data/Hora</th></tr></thead>
-    <tbody>${arr.slice().reverse().map(l => `
-      <tr>
-        <td>${l.nome || '—'}</td>
-        <td>${l.whatsapp || '—'}</td>
-        <td>${l.pain ? `<span class="bg bg-b">${l.pain}</span>` : '—'}</td>
-        <td><span class="bg bg-g">${l.prize}</span></td>
-        <td>${l.hora}</td>
-      </tr>`).join('')}
-    </tbody></table>`;
-}
-
 document.getElementById('btn-bk').addEventListener('click', () => go('s-start'));
-
 document.getElementById('btn-clr').addEventListener('click', () => {
-  if (confirm('Apagar todos os leads do tablet?')) { setLeads([]); openAdmin(); }
+  if(confirm('Apagar todos os leads?')){ setLeads([]); openAdmin(); }
 });
-
 document.getElementById('btn-exp').addEventListener('click', () => {
-  const arr = getLeads(); if (!arr.length) return;
-  const csv = 'Nome,WhatsApp,Dor,Prêmio,Data-Hora\n' + arr.map(l =>
-    [l.nome, l.whatsapp, l.pain, l.prize, l.hora]
-      .map(v => `"${(v || '').replace(/"/g, '""')}"`)
-      .join(',')
+  const arr=getLeads(); if(!arr.length) return;
+  const csv='Nome,WhatsApp,Modo,Prêmio,Hora\n'+arr.map(l=>
+    [l.nome,l.whatsapp,l.modo,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')
   ).join('\n');
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
-  a.download = `limatech_leads_${new Date().toISOString().slice(0, 10)}.csv`;
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download=`limatech_leads_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
 });
 
-// ══ TELA CHEIA ══
+// ════════════════════════════════
+// TELA CHEIA
+// ════════════════════════════════
 const fsModal = document.getElementById('fs-modal');
-
-function enterFullscreen() {
-  const el = document.documentElement;
-  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
-  if (req) req.call(el).catch(() => {});
-}
-
-function isFullscreen() {
-  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
-}
-
-function dismissModal() {
-  fsModal.classList.add('hidden');
-  setTimeout(() => fsModal.style.display = 'none', 400);
-}
-
 let userDismissed = false;
-
-document.getElementById('btn-fs').addEventListener('click', () => {
-  getAC(); // inicializa áudio junto com o gesto do usuário
-  enterFullscreen();
-  userDismissed = true;
-  dismissModal();
-});
-
-// Se já estiver em tela cheia ao carregar, esconde
-if (isFullscreen()) { userDismissed = true; dismissModal(); }
-
-// Volta o modal apenas se o usuário não tiver dispensado manualmente
-document.addEventListener('fullscreenchange',       recheckFs);
-document.addEventListener('webkitfullscreenchange', recheckFs);
-
-function recheckFs() {
-  if (!isFullscreen() && !userDismissed && fsModal.style.display === 'none') {
-    fsModal.style.display = 'flex';
-    requestAnimationFrame(() => fsModal.classList.remove('hidden'));
-  }
+function enterFS() {
+  const el=document.documentElement;
+  const fn=el.requestFullscreen||el.webkitRequestFullscreen||el.mozRequestFullScreen||el.msRequestFullscreen;
+  if(fn) fn.call(el).catch(()=>{});
 }
+function isFS() {
+  return !!(document.fullscreenElement||document.webkitFullscreenElement||document.mozFullScreenElement||document.msFullscreenElement);
+}
+function dismissModal() { fsModal.classList.add('hidden'); setTimeout(()=>fsModal.style.display='none',400); }
+document.getElementById('btn-fs').addEventListener('click', () => { getAC(); enterFS(); userDismissed=true; dismissModal(); });
+if(isFS()){ userDismissed=true; dismissModal(); }
+['fullscreenchange','webkitfullscreenchange'].forEach(ev=>
+  document.addEventListener(ev,()=>{
+    if(!isFS()&&!userDismissed&&fsModal.style.display==='none'){
+      fsModal.style.display='flex'; requestAnimationFrame(()=>fsModal.classList.remove('hidden'));
+    }
+  })
+);
 </script>
 </body>
 </html>

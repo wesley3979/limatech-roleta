@@ -457,6 +457,7 @@
       <h2>Quase lá!</h2>
       <p>Só precisamos de duas informações para liberar seu brinde</p>
       <div class="field"><label>Seu nome</label><input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off"></div>
+      <div class="field"><label>Cargo / Função</label><input type="text" id="inp-cargo" placeholder="Ex: Secretário, Vereador, Diretor..." autocomplete="off"></div>
       <div class="field"><label>WhatsApp</label><input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off" inputmode="tel"></div>
       <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
     </div>
@@ -993,16 +994,17 @@ document.getElementById('btn-spin').addEventListener('click',()=>{
 });
 document.getElementById('btn-reveal').addEventListener('click',()=>{
   const nome=document.getElementById('inp-nome').value.trim();
+  const cargo=document.getElementById('inp-cargo').value.trim();
   const wpp=document.getElementById('inp-wpp').value.trim();
   document.getElementById('inp-nome').classList.toggle('err',!nome);
   document.getElementById('inp-wpp').classList.toggle('err',!wpp);
   if(!nome||!wpp) return;
-  sndClick(); lead={nome,whatsapp:wpp}; showPrize();
+  sndClick(); lead={nome,cargo,whatsapp:wpp}; showPrize();
 });
 document.getElementById('btn-skip').addEventListener('click',()=>{ sndClick(); lead=null; showPrize(); });
 document.getElementById('btn-restart').addEventListener('click',()=>{
   sndClick(); seg=null; lead=null;
-  document.getElementById('inp-nome').value=''; document.getElementById('inp-wpp').value='';
+  document.getElementById('inp-nome').value=''; document.getElementById('inp-cargo').value=''; document.getElementById('inp-wpp').value='';
   document.getElementById('inp-nome').classList.remove('err'); document.getElementById('inp-wpp').classList.remove('err');
   go('s-start');
 });
@@ -1015,7 +1017,7 @@ const getLeads=()=>{ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]');
 const setLeads=arr=>localStorage.setItem(LS_KEY,JSON.stringify(arr));
 function saveLead(){
   const arr=getLeads();
-  arr.push({ id:Date.now(), nome:lead.nome, whatsapp:lead.whatsapp, prize:seg.prize, modo:gameMode, hora:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) });
+  arr.push({ id:Date.now(), nome:lead.nome, cargo:lead.cargo||'', whatsapp:lead.whatsapp, prize:seg.prize, modo:gameMode, hora:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) });
   setLeads(arr);
 }
 
@@ -1030,14 +1032,14 @@ function openAdmin(){
   document.getElementById('adm-ct').textContent=`${arr.length} lead${arr.length!==1?'s':''} coletado${arr.length!==1?'s':''}`;
   const body=document.getElementById('adm-body');
   if(!arr.length){ body.innerHTML='<div class="adm-empty">Nenhum lead ainda.</div>'; }
-  else{ body.innerHTML=`<table><thead><tr><th>Nome</th><th>WhatsApp</th><th>Modo</th><th>Prêmio</th><th>Hora</th></tr></thead><tbody>${arr.slice().reverse().map(l=>`<tr><td>${l.nome||'—'}</td><td>${l.whatsapp||'—'}</td><td><span class="bg bg-b">${l.modo||'wheel'}</span></td><td><span class="bg bg-g">${l.prize}</span></td><td>${l.hora}</td></tr>`).join('')}</tbody></table>`; }
+  else{ body.innerHTML=`<table><thead><tr><th>Nome</th><th>Cargo</th><th>WhatsApp</th><th>Modo</th><th>Prêmio</th><th>Hora</th></tr></thead><tbody>${arr.slice().reverse().map(l=>`<tr><td>${l.nome||'—'}</td><td>${l.cargo||'—'}</td><td>${l.whatsapp||'—'}</td><td><span class="bg bg-b">${l.modo||'wheel'}</span></td><td><span class="bg bg-g">${l.prize}</span></td><td>${l.hora}</td></tr>`).join('')}</tbody></table>`; }
   go('s-admin');
 }
 document.getElementById('btn-bk').addEventListener('click',()=>go('s-start'));
 document.getElementById('btn-clr').addEventListener('click',()=>{ if(confirm('Apagar todos os leads?')){ setLeads([]); openAdmin(); } });
 document.getElementById('btn-exp').addEventListener('click',()=>{
   const arr=getLeads(); if(!arr.length) return;
-  const csv='Nome,WhatsApp,Modo,Prêmio,Hora\n'+arr.map(l=>[l.nome,l.whatsapp,l.modo,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const csv='Nome,Cargo,WhatsApp,Modo,Prêmio,Hora\n'+arr.map(l=>[l.nome,l.cargo,l.whatsapp,l.modo,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download=`limatech_leads_${new Date().toISOString().slice(0,10)}.csv`; a.click();
 });
 

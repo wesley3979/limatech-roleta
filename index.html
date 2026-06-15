@@ -299,9 +299,45 @@
   .bg-g { background: rgba(34,197,94,.18); color: var(--verde); }
   .bg-b { background: rgba(30,86,200,.2); color: var(--ciano); }
   .adm-empty { color: rgba(255,255,255,.25); text-align: center; padding: 40px; }
+
+  /* ── MODAL TELA CHEIA ── */
+  #fs-modal {
+    position: fixed; inset: 0; z-index: 9999;
+    background: #060c1f;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 28px; padding: 40px;
+    transition: opacity .4s ease;
+  }
+  #fs-modal.hidden { opacity: 0; pointer-events: none; }
+
+  .fs-icon { font-size: 72px; animation: bounce-icon 1.6s infinite; }
+  @keyframes bounce-icon { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+
+  .fs-title { color: #fff; font-size: 26px; font-weight: 800; text-align: center; }
+  .fs-sub   { color: rgba(255,255,255,.5); font-size: 15px; text-align: center; line-height: 1.5; }
+
+  .btn-fs {
+    background: linear-gradient(135deg, var(--azul-c), var(--ciano));
+    color: #fff; border: none; border-radius: 56px;
+    padding: 18px 52px; font-size: 20px; font-weight: 800;
+    cursor: pointer; letter-spacing: .3px;
+    box-shadow: 0 8px 28px rgba(30,86,200,.5);
+    animation: pulse-btn 2s infinite;
+    transition: transform .12s;
+  }
+  .btn-fs:active { transform: scale(.95); }
 </style>
 </head>
 <body>
+
+<!-- ══ MODAL TELA CHEIA ══ -->
+<div id="fs-modal">
+  <div class="fs-icon">⛶</div>
+  <div class="fs-title">Ativar tela cheia</div>
+  <div class="fs-sub">Para a melhor experiência no evento,<br>toque no botão abaixo para continuar.</div>
+  <button class="btn-fs" id="btn-fs">Entrar em tela cheia</button>
+</div>
 
 <canvas id="particles"></canvas>
 
@@ -713,6 +749,44 @@ document.getElementById('btn-exp').addEventListener('click', () => {
 
 // Prevenir zoom duplo toque
 document.addEventListener('touchend', e => { if (!e.touches.length) e.preventDefault(); }, { passive: false });
+
+// ══ TELA CHEIA ══
+const fsModal = document.getElementById('fs-modal');
+
+function enterFullscreen() {
+  const el = document.documentElement;
+  const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+  if (req) req.call(el).catch(() => {});
+}
+
+function isFullscreen() {
+  return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement);
+}
+
+function dismissModal() {
+  fsModal.classList.add('hidden');
+  setTimeout(() => fsModal.style.display = 'none', 400);
+}
+
+document.getElementById('btn-fs').addEventListener('click', () => {
+  enterFullscreen();
+  dismissModal();
+});
+
+// Se já estiver em tela cheia ao carregar (ex: PWA), esconde logo
+if (isFullscreen()) dismissModal();
+
+// Volta o modal se sair da tela cheia acidentalmente
+document.addEventListener('fullscreenchange',       recheckFs);
+document.addEventListener('webkitfullscreenchange', recheckFs);
+document.addEventListener('mozfullscreenchange',    recheckFs);
+
+function recheckFs() {
+  if (!isFullscreen() && fsModal.style.display === 'none') {
+    fsModal.style.display = 'flex';
+    requestAnimationFrame(() => fsModal.classList.remove('hidden'));
+  }
+}
 </script>
 </body>
 </html>

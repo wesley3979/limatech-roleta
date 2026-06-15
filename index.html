@@ -285,25 +285,6 @@
   .ab-bk  { background: rgba(255,255,255,.1); color: #fff; }
   .ab-cfg { background: rgba(30,86,200,.4); color: #fff; }
 
-  .adm-sync-bar {
-    background: rgba(30,86,200,.12); border: 1px solid rgba(30,86,200,.25);
-    border-radius: 12px; padding: 12px 14px; margin-bottom: 14px;
-    font-size: 13px; color: rgba(255,255,255,.6);
-  }
-  .adm-sync-bar strong { color: var(--ciano); display: block; margin-bottom: 6px; font-size: 13px; }
-  .adm-sync-bar input {
-    width: 100%; padding: 9px 12px;
-    background: rgba(255,255,255,.07); border: 1px solid rgba(255,255,255,.12);
-    border-radius: 8px; color: #fff; font-size: 13px; outline: none;
-    -webkit-appearance: none; appearance: none;
-  }
-  .adm-sync-row { display: flex; gap: 8px; margin-top: 8px; }
-  .adm-sync-row input { flex: 1; }
-  .ab-save { background: var(--azul-c); color: #fff; padding: 9px 14px; border-radius: 8px; border: none; font-size: 13px; font-weight: 600; cursor: pointer; white-space: nowrap; }
-  .sync-status { font-size: 12px; margin-top: 6px; }
-  .sync-ok  { color: var(--verde); }
-  .sync-err { color: var(--vermelho); }
-
   .adm-ct { color: rgba(255,255,255,.35); font-size: 12px; margin-bottom: 10px; }
 
   table { width: 100%; border-collapse: collapse; color: #fff; font-size: 12px; }
@@ -442,17 +423,6 @@
       <button class="ab ab-clr" id="btn-clr">Limpar</button>
       <button class="ab ab-bk"  id="btn-bk">← Voltar</button>
     </div>
-  </div>
-
-  <!-- Configuração Google Sheets -->
-  <div class="adm-sync-bar">
-    <strong>🔗 Sincronizar com Google Sheets</strong>
-    Cole aqui a URL do seu Google Apps Script para enviar os dados automaticamente:
-    <div class="adm-sync-row">
-      <input type="url" id="inp-gsheet" placeholder="https://script.google.com/macros/s/..." autocomplete="off">
-      <button class="ab-save" id="btn-save-url">Salvar</button>
-    </div>
-    <div class="sync-status" id="sync-status"></div>
   </div>
 
   <div class="adm-ct" id="adm-ct"></div>
@@ -680,21 +650,6 @@ function saveLead() {
   };
   arr.push(entry);
   setLeads(arr);
-  sendToSheets(entry); // tenta enviar para Google Sheets se URL configurada
-}
-
-// ══ GOOGLE SHEETS SYNC ══
-const SH_KEY = 'lt_sheets_url';
-
-function sendToSheets(entry) {
-  const url = localStorage.getItem(SH_KEY);
-  if (!url) return;
-  fetch(url, {
-    method: 'POST',
-    mode: 'no-cors',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(entry)
-  }).catch(() => {}); // silencioso, localStorage é o backup
 }
 
 // ══ ADMIN ══
@@ -714,15 +669,6 @@ function openAdmin() {
   const arr = getLeads();
   document.getElementById('adm-ct').textContent =
     `${arr.length} lead${arr.length !== 1 ? 's' : ''} coletado${arr.length !== 1 ? 's' : ''}`;
-
-  // Carregar URL salva
-  const savedUrl = localStorage.getItem(SH_KEY) || '';
-  document.getElementById('inp-gsheet').value = savedUrl;
-  document.getElementById('sync-status').textContent =
-    savedUrl ? '✓ URL configurada — novos leads serão enviados automaticamente' : '';
-  document.getElementById('sync-status').className =
-    'sync-status' + (savedUrl ? ' sync-ok' : '');
-
   renderTable(arr);
   go('s-admin');
 }
@@ -745,19 +691,6 @@ function renderTable(arr) {
       </tr>`).join('')}
     </tbody></table>`;
 }
-
-document.getElementById('btn-save-url').addEventListener('click', () => {
-  const url = document.getElementById('inp-gsheet').value.trim();
-  localStorage.setItem(SH_KEY, url);
-  const st = document.getElementById('sync-status');
-  if (url) {
-    st.textContent = '✓ URL salva! Próximos leads serão enviados automaticamente.';
-    st.className = 'sync-status sync-ok';
-  } else {
-    st.textContent = 'URL removida.';
-    st.className = 'sync-status';
-  }
-});
 
 document.getElementById('btn-bk').addEventListener('click', () => go('s-start'));
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-<head>
+<head>s
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <title>LimaTech — Gire e Ganhe</title>
@@ -217,6 +217,27 @@
   .field input:focus { border-color: var(--azul-c); }
   .field input::placeholder { color: rgba(255,255,255,.22); }
   .field input.err { border-color: var(--vermelho); }
+  /* Badges de sistemas de interesse */
+  .sys-badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 2px; }
+  .sys-badge {
+    background: rgba(255,255,255,.06);
+    border: 1.5px solid rgba(255,255,255,.15);
+    border-radius: 30px;
+    color: rgba(255,255,255,.65);
+    font-size: 13px; font-weight: 600;
+    padding: 7px 14px;
+    cursor: pointer;
+    transition: all .18s;
+    white-space: nowrap;
+  }
+  .sys-badge.selected {
+    background: rgba(30,86,200,.3);
+    border-color: var(--ciano);
+    color: var(--ciano);
+    box-shadow: 0 0 10px rgba(6,182,212,.25);
+  }
+  .sys-badge:active { transform: scale(.95); }
+
   .btn-reveal { width: 100%; padding: 16px; background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 14px; font-size: 19px; font-weight: 900; cursor: pointer; box-shadow: 0 8px 24px rgba(245,158,11,.45); transition: transform .12s, opacity .12s; margin-top: 4px; }
   .btn-reveal:active { transform: scale(.97); opacity: .9; }
   .btn-skip { width: 360px; padding: 14px; background: rgba(255,255,255,.05); border: 2px solid rgba(255,255,255,.18); border-radius: 14px; color: rgba(255,255,255,.6); font-size: 15px; font-weight: 600; cursor: pointer; transition: background .2s; }
@@ -459,6 +480,16 @@
       <div class="field"><label>Seu nome</label><input type="text" id="inp-nome" placeholder="Como você se chama?" autocomplete="off"></div>
       <div class="field"><label>Cargo / Função</label><input type="text" id="inp-cargo" placeholder="Ex: Secretário, Vereador, Diretor..." autocomplete="off"></div>
       <div class="field"><label>WhatsApp</label><input type="tel" id="inp-wpp" placeholder="(00) 00000-0000" autocomplete="off" inputmode="tel"></div>
+      <div class="field">
+        <label>Sistemas de interesse <span style="color:rgba(255,255,255,.3);font-size:11px">(opcional)</span></label>
+        <div class="sys-badges" id="sys-badges">
+          <button type="button" class="sys-badge" data-sys="PCA">PCA</button>
+          <button type="button" class="sys-badge" data-sys="Gestão Hospitalar/Saúde">🏥 Gestão Hospitalar</button>
+          <button type="button" class="sys-badge" data-sys="Ponto Eletrônico">⏱️ Ponto Eletrônico</button>
+          <button type="button" class="sys-badge" data-sys="Painel de Votação">🏛️ Painel de Votação</button>
+          <button type="button" class="sys-badge" data-sys="Sistema de Agendamento">📋 Agendamento</button>
+        </div>
+      </div>
       <button class="btn-reveal" id="btn-reveal">✨ REVELAR MEU PRÊMIO</button>
     </div>
     <button class="btn-skip" id="btn-skip">Prefiro não informar meus dados</button>
@@ -992,19 +1023,24 @@ document.getElementById('btn-spin').addEventListener('click',()=>{
   else if(gameMode==='quiz'){ startQuiz(); }
   else { go('s-spin'); setTimeout(()=>doSpin(SEGS.indexOf(seg)),300); }
 });
+document.querySelectorAll('.sys-badge').forEach(b=>{
+  b.addEventListener('click',()=>{ sndClick(); b.classList.toggle('selected'); });
+});
 document.getElementById('btn-reveal').addEventListener('click',()=>{
   const nome=document.getElementById('inp-nome').value.trim();
   const cargo=document.getElementById('inp-cargo').value.trim();
   const wpp=document.getElementById('inp-wpp').value.trim();
+  const sistemas=[...document.querySelectorAll('.sys-badge.selected')].map(b=>b.dataset.sys).join(', ');
   document.getElementById('inp-nome').classList.toggle('err',!nome);
   document.getElementById('inp-wpp').classList.toggle('err',!wpp);
   if(!nome||!wpp) return;
-  sndClick(); lead={nome,cargo,whatsapp:wpp}; showPrize();
+  sndClick(); lead={nome,cargo,whatsapp:wpp,sistemas}; showPrize();
 });
 document.getElementById('btn-skip').addEventListener('click',()=>{ sndClick(); lead=null; showPrize(); });
 document.getElementById('btn-restart').addEventListener('click',()=>{
   sndClick(); seg=null; lead=null;
   document.getElementById('inp-nome').value=''; document.getElementById('inp-cargo').value=''; document.getElementById('inp-wpp').value='';
+  document.querySelectorAll('.sys-badge.selected').forEach(b=>b.classList.remove('selected'));
   document.getElementById('inp-nome').classList.remove('err'); document.getElementById('inp-wpp').classList.remove('err');
   go('s-start');
 });
@@ -1017,7 +1053,7 @@ const getLeads=()=>{ try{ return JSON.parse(localStorage.getItem(LS_KEY)||'[]');
 const setLeads=arr=>localStorage.setItem(LS_KEY,JSON.stringify(arr));
 function saveLead(){
   const arr=getLeads();
-  arr.push({ id:Date.now(), nome:lead.nome, cargo:lead.cargo||'', whatsapp:lead.whatsapp, prize:seg.prize, modo:gameMode, hora:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) });
+  arr.push({ id:Date.now(), nome:lead.nome, cargo:lead.cargo||'', whatsapp:lead.whatsapp, sistemas:lead.sistemas||'', prize:seg.prize, modo:gameMode, hora:new Date().toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) });
   setLeads(arr);
 }
 
@@ -1032,14 +1068,14 @@ function openAdmin(){
   document.getElementById('adm-ct').textContent=`${arr.length} lead${arr.length!==1?'s':''} coletado${arr.length!==1?'s':''}`;
   const body=document.getElementById('adm-body');
   if(!arr.length){ body.innerHTML='<div class="adm-empty">Nenhum lead ainda.</div>'; }
-  else{ body.innerHTML=`<table><thead><tr><th>Nome</th><th>Cargo</th><th>WhatsApp</th><th>Modo</th><th>Prêmio</th><th>Hora</th></tr></thead><tbody>${arr.slice().reverse().map(l=>`<tr><td>${l.nome||'—'}</td><td>${l.cargo||'—'}</td><td>${l.whatsapp||'—'}</td><td><span class="bg bg-b">${l.modo||'wheel'}</span></td><td><span class="bg bg-g">${l.prize}</span></td><td>${l.hora}</td></tr>`).join('')}</tbody></table>`; }
+  else{ body.innerHTML=`<table><thead><tr><th>Nome</th><th>Cargo</th><th>WhatsApp</th><th>Sistemas</th><th>Modo</th><th>Prêmio</th><th>Hora</th></tr></thead><tbody>${arr.slice().reverse().map(l=>`<tr><td>${l.nome||'—'}</td><td>${l.cargo||'—'}</td><td>${l.whatsapp||'—'}</td><td>${l.sistemas||'—'}</td><td><span class="bg bg-b">${l.modo||'wheel'}</span></td><td><span class="bg bg-g">${l.prize}</span></td><td>${l.hora}</td></tr>`).join('')}</tbody></table>`; }
   go('s-admin');
 }
 document.getElementById('btn-bk').addEventListener('click',()=>go('s-start'));
 document.getElementById('btn-clr').addEventListener('click',()=>{ if(confirm('Apagar todos os leads?')){ setLeads([]); openAdmin(); } });
 document.getElementById('btn-exp').addEventListener('click',()=>{
   const arr=getLeads(); if(!arr.length) return;
-  const csv='Nome,Cargo,WhatsApp,Modo,Prêmio,Hora\n'+arr.map(l=>[l.nome,l.cargo,l.whatsapp,l.modo,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
+  const csv='Nome,Cargo,WhatsApp,Sistemas,Modo,Prêmio,Hora\n'+arr.map(l=>[l.nome,l.cargo,l.whatsapp,l.sistemas,l.modo,l.prize,l.hora].map(v=>`"${(v||'').replace(/"/g,'""')}"`).join(',')).join('\n');
   const a=document.createElement('a'); a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'})); a.download=`limatech_leads_${new Date().toISOString().slice(0,10)}.csv`; a.click();
 });
 

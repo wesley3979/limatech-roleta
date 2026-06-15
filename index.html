@@ -480,11 +480,17 @@ const SEGS = [
 let cur = 's-start', seg = null, lead = null;
 let idleAngle = 0, spinAngle = 0;
 
-// ══ AUDIO ══
-const AC = new (window.AudioContext || window.webkitAudioContext)();
-const resume = () => AC.state === 'suspended' && AC.resume();
+// ══ AUDIO (criado na primeira interação — exigência do Android) ══
+let AC = null;
+function getAC() {
+  if (!AC) AC = new (window.AudioContext || window.webkitAudioContext)();
+  if (AC.state === 'suspended') AC.resume();
+  return AC;
+}
+const resume = () => getAC();
 
 function tone(freq, type, vol, dur, delay = 0) {
+  const AC = getAC();
   const o = AC.createOscillator(), g = AC.createGain();
   o.connect(g); g.connect(AC.destination);
   o.frequency.value = freq; o.type = type;
@@ -747,9 +753,6 @@ document.getElementById('btn-exp').addEventListener('click', () => {
   a.click();
 });
 
-// Prevenir zoom duplo toque
-document.addEventListener('touchend', e => { if (!e.touches.length) e.preventDefault(); }, { passive: false });
-
 // ══ TELA CHEIA ══
 const fsModal = document.getElementById('fs-modal');
 
@@ -768,21 +771,24 @@ function dismissModal() {
   setTimeout(() => fsModal.style.display = 'none', 400);
 }
 
+let userDismissed = false;
+
 document.getElementById('btn-fs').addEventListener('click', () => {
+  getAC(); // inicializa áudio junto com o gesto do usuário
   enterFullscreen();
+  userDismissed = true;
   dismissModal();
 });
 
-// Se já estiver em tela cheia ao carregar (ex: PWA), esconde logo
-if (isFullscreen()) dismissModal();
+// Se já estiver em tela cheia ao carregar, esconde
+if (isFullscreen()) { userDismissed = true; dismissModal(); }
 
-// Volta o modal se sair da tela cheia acidentalmente
+// Volta o modal apenas se o usuário não tiver dispensado manualmente
 document.addEventListener('fullscreenchange',       recheckFs);
 document.addEventListener('webkitfullscreenchange', recheckFs);
-document.addEventListener('mozfullscreenchange',    recheckFs);
 
 function recheckFs() {
-  if (!isFullscreen() && fsModal.style.display === 'none') {
+  if (!isFullscreen() && !userDismissed && fsModal.style.display === 'none') {
     fsModal.style.display = 'flex';
     requestAnimationFrame(() => fsModal.classList.remove('hidden'));
   }

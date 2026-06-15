@@ -38,7 +38,7 @@
   .logo-txt small { color: rgba(255,255,255,.4); font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase; }
 
   /* ════ INÍCIO ════ */
-  #s-start { gap: 16px; padding-bottom: 118px; }
+  #s-start { gap: 14px; padding-bottom: 0; }
   .mode-panel { display: none; flex-direction: column; align-items: center; gap: 16px; width: 100%; }
   .mode-panel.active { display: flex; }
 
@@ -71,16 +71,19 @@
   .quiz-preview-sub { color: rgba(255,255,255,.5); font-size: 16px; line-height: 1.5; margin-bottom: 14px; }
   .quiz-preview-badge { display: inline-block; background: rgba(34,197,94,.15); border: 1.5px solid rgba(34,197,94,.35); border-radius: 30px; padding: 8px 22px; color: var(--verde); font-size: 15px; font-weight: 700; }
 
-  /* Botões de modo (grandes) */
-  .start-bottom { position: absolute; bottom: 0; left: 0; right: 0; padding: 12px 20px 18px; display: flex; gap: 10px; align-items: stretch; background: linear-gradient(to top,rgba(6,12,31,.96) 60%,transparent); }
-  .btn-admin-small { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: 13px; font-weight: 600; cursor: pointer; padding: 12px 16px; border-radius: 14px; transition: all .2s; flex-shrink: 0; white-space: nowrap; align-self: center; }
+  /* Navegador de modo (compacto, no fluxo) */
+  .mode-nav { display: flex; align-items: center; gap: 10px; width: 100%; max-width: 480px; }
+  .btn-admin-small { background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: 12px; font-weight: 600; cursor: pointer; padding: 10px 12px; border-radius: 12px; transition: all .2s; flex-shrink: 0; white-space: nowrap; }
   .btn-admin-small:active { background: rgba(255,255,255,.1); }
-  .mode-btns { display: flex; gap: 10px; flex: 1; }
-  .btn-mode { flex: 1; display: flex; flex-direction: column; align-items: center; gap: 6px; background: rgba(255,255,255,.06); border: 2px solid rgba(255,255,255,.12); border-radius: 18px; padding: 14px 10px 12px; cursor: pointer; transition: all .22s; color: rgba(255,255,255,.5); }
-  .btn-mode .mode-ico { font-size: 30px; line-height: 1; }
-  .btn-mode .mode-lbl { font-size: 14px; font-weight: 700; letter-spacing: .3px; }
-  .btn-mode.on { background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.55); color: var(--amarelo); box-shadow: 0 0 22px rgba(245,158,11,.22); }
-  .btn-mode:active { transform: scale(.95); }
+  .mode-cycler { flex: 1; display: flex; align-items: center; background: rgba(255,255,255,.06); border: 1.5px solid rgba(255,255,255,.12); border-radius: 50px; overflow: hidden; height: 48px; }
+  .btn-cycle { background: none; border: none; color: rgba(255,255,255,.55); font-size: 20px; font-weight: 900; cursor: pointer; padding: 0 16px; height: 100%; transition: background .15s, color .15s; flex-shrink: 0; }
+  .btn-cycle:active { background: rgba(255,255,255,.1); color: #fff; }
+  .mode-cycler-label { flex: 1; display: flex; align-items: center; justify-content: center; gap: 8px; pointer-events: none; }
+  .mode-cycler-ico { font-size: 20px; line-height: 1; }
+  .mode-cycler-txt { color: #fff; font-size: 14px; font-weight: 700; letter-spacing: .3px; }
+  .mode-cycler-dots { display: flex; gap: 5px; align-items: center; margin-left: 6px; }
+  .mode-dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(255,255,255,.2); transition: all .2s; }
+  .mode-dot.active { background: var(--amarelo); transform: scale(1.4); }
 
   /* Botão girar */
   .btn-spin { background: linear-gradient(135deg, var(--amarelo), var(--laranja)); color: #fff; border: none; border-radius: 60px; padding: 22px 70px; font-size: 26px; font-weight: 900; cursor: pointer; letter-spacing: .5px; box-shadow: 0 10px 32px rgba(245,158,11,.5); animation: pulse-btn 2s infinite; transition: transform .12s; flex-shrink: 0; }
@@ -301,17 +304,20 @@
 
   <button class="btn-spin" id="btn-spin">GIRAR AGORA</button>
 
-  <div class="start-bottom">
-    <button class="btn-admin-small" id="btn-admin-tiny">⚙️ leads</button>
-    <div class="mode-btns">
-      <button class="btn-mode" id="btn-slot-toggle">
-        <span class="mode-ico">🎰</span>
-        <span class="mode-lbl">Caça-Níquel</span>
-      </button>
-      <button class="btn-mode" id="btn-quiz-toggle">
-        <span class="mode-ico">⚽</span>
-        <span class="mode-lbl">Quiz Copa</span>
-      </button>
+  <div class="mode-nav">
+    <button class="btn-admin-small" id="btn-admin-tiny">⚙️</button>
+    <div class="mode-cycler">
+      <button class="btn-cycle" id="btn-mode-prev">‹</button>
+      <div class="mode-cycler-label">
+        <span class="mode-cycler-ico" id="mode-ico">🎡</span>
+        <span class="mode-cycler-txt" id="mode-lbl">Roleta</span>
+        <div class="mode-cycler-dots">
+          <div class="mode-dot active" id="mdot-0"></div>
+          <div class="mode-dot" id="mdot-1"></div>
+          <div class="mode-dot" id="mdot-2"></div>
+        </div>
+      </div>
+      <button class="btn-cycle" id="btn-mode-next">›</button>
     </div>
   </div>
 </div>
@@ -979,14 +985,31 @@ function showPrize(){
 // ════════════════════════════════
 // BOTÕES + MODO
 // ════════════════════════════════
+const MODES = [
+  { id:'wheel', ico:'🎡', lbl:'Roleta',      spinBtn:'GIRAR AGORA'    },
+  { id:'slot',  ico:'🎰', lbl:'Caça-Níquel', spinBtn:'PUXAR ALAVANCA' },
+  { id:'quiz',  ico:'⚽', lbl:'Quiz Copa',   spinBtn:'CHUTAR PLACAR'  },
+];
+let modeIdx = 0;
+
 function setMode(mode){
-  gameMode=mode;
-  ['wheel','slot','quiz'].forEach(m=>document.getElementById('panel-'+m).classList.toggle('active',m===mode));
-  document.getElementById('btn-slot-toggle').classList.toggle('on',mode==='slot');
-  document.getElementById('btn-quiz-toggle').classList.toggle('on',mode==='quiz');
-  const labels={wheel:'GIRAR AGORA',slot:'PUXAR ALAVANCA',quiz:'CHUTAR PLACAR'};
-  document.getElementById('btn-spin').textContent=labels[mode];
+  modeIdx = MODES.findIndex(m=>m.id===mode);
+  if(modeIdx<0) modeIdx=0;
+  gameMode = mode;
+  ['wheel','slot','quiz'].forEach((m,i)=>document.getElementById('panel-'+m).classList.toggle('active',i===modeIdx));
+  document.getElementById('mode-ico').textContent = MODES[modeIdx].ico;
+  document.getElementById('mode-lbl').textContent = MODES[modeIdx].lbl;
+  document.getElementById('btn-spin').textContent  = MODES[modeIdx].spinBtn;
+  MODES.forEach((_,i)=>document.getElementById('mdot-'+i).classList.toggle('active',i===modeIdx));
 }
+function cycleMode(dir){
+  getAC(); sndClick();
+  modeIdx = (modeIdx + dir + MODES.length) % MODES.length;
+  setMode(MODES[modeIdx].id);
+}
+document.getElementById('btn-mode-prev').addEventListener('click',()=>cycleMode(-1));
+document.getElementById('btn-mode-next').addEventListener('click',()=>cycleMode(+1));
+
 document.getElementById('btn-spin').addEventListener('click',()=>{
   getAC(); sndClick();
   seg=SEGS[Math.floor(Math.random()*SEGS.length)]; lead=null;
@@ -994,8 +1017,6 @@ document.getElementById('btn-spin').addEventListener('click',()=>{
   else if(gameMode==='quiz'){ startQuiz(); }
   else { go('s-spin'); setTimeout(()=>doSpin(SEGS.indexOf(seg)),300); }
 });
-document.getElementById('btn-slot-toggle').addEventListener('click',()=>{ getAC(); sndClick(); setMode(gameMode==='slot'?'wheel':'slot'); });
-document.getElementById('btn-quiz-toggle').addEventListener('click',()=>{ getAC(); sndClick(); setMode(gameMode==='quiz'?'wheel':'quiz'); });
 document.getElementById('btn-reveal').addEventListener('click',()=>{
   const nome=document.getElementById('inp-nome').value.trim();
   const wpp=document.getElementById('inp-wpp').value.trim();
